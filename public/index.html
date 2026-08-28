@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Print Fleet Manager</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <nav class="sidebar">
+      <div class="brand">
+        <span class="mark">FT</span> FoxTrack Clone
+        <button id="theme-toggle" class="btn ghost small" style="margin-left:auto; padding:4px 7px;" title="Toggle dark mode">🌓</button>
+      </div>
+      <div id="sidebar-nav"></div>
+      <div class="sidebar-footer" id="sidebar-footer"></div>
+    </nav>
+    <div class="main-scroll">
+      <main class="main" id="main"></main>
+    </div>
+  </div>
+  <div id="modal-root"></div>
+  <div id="toast-root"></div>
+  <script src="/core.js"></script>
+  <script src="/page-dashboard.js"></script>
+  <script src="/page-orders.js"></script>
+  <script src="/page-resource.js"></script>
+  <script src="/page-quotes.js"></script>
+  <script src="/page-printers.js"></script>
+  <script src="/page-maintenance.js"></script>
+  <script src="/page-reports.js"></script>
+  <script src="/page-settings.js"></script>
+  <script src="/app-init.js"></script>
+</body>
+</html>

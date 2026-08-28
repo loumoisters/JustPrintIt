@@ -1,0 +1,15 @@
+{
+  "name": "print-fleet-manager",
+  "version": "1.0.0",
+  "description": "Self-hosted dashboard for managing 3D printer fleets, print jobs, filament inventory, and model files. Zero external dependencies.",
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node scripts/seed.js"
+  },
+  "license": "MIT"
+}

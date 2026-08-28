@@ -1,0 +1,826 @@
+{
+  "customers": [
+    {
+      "id": "113c477e-55d9-4438-9dd7-ac4c53d788bd",
+      "customerNumber": "C-0001",
+      "name": "Maria Chen",
+      "email": "maria@brightloop.co",
+      "phone": "555-0142",
+      "notes": "Repeat client, prefers PETG.",
+      "createdAt": "2026-03-03T05:00:00.000Z"
+    },
+    {
+      "id": "639b6645-ec39-485c-a8b6-57d7239d44a2",
+      "customerNumber": "C-0002",
+      "name": "Dev Patel",
+      "email": "dev.patel@example.com",
+      "phone": "555-0198",
+      "notes": "",
+      "createdAt": "2026-04-12T04:00:00.000Z"
+    },
+    {
+      "id": "a1798823-119c-415b-9e77-fd431affc7e5",
+      "customerNumber": "C-0003",
+      "name": "Cascade Robotics",
+      "email": "orders@cascaderobotics.com",
+      "phone": "555-0111",
+      "notes": "B2B account, net-30 terms.",
+      "createdAt": "2026-05-08T04:00:00.000Z"
+    },
+    {
+      "id": "860570d7-27ed-48da-82e7-d355b6715b3f",
+      "customerNumber": "C-0004",
+      "name": "Sarah Kim",
+      "email": "sarahk@example.com",
+      "phone": "555-0177",
+      "notes": "",
+      "createdAt": "2026-07-20T04:00:00.000Z"
+    },
+    {
+      "id": "a867d129-f6e5-488b-aadc-a0321481ca99",
+      "customerNumber": "C-0005",
+      "name": "Tom Rivera",
+      "email": "tom.rivera@example.com",
+      "phone": "555-0133",
+      "notes": "Found us through Etsy.",
+      "createdAt": "2026-08-22T01:51:03.407Z"
+    }
+  ],
+  "quotes": [
+    {
+      "id": "64462310-9719-418c-b8c4-096743cdacf8",
+      "quoteNumber": "Q-0001",
+      "customerId": "860570d7-27ed-48da-82e7-d355b6715b3f",
+      "status": "pending",
+      "materialCost": 6.5,
+      "electricityCost": 1.2,
+      "marginPercent": 35,
+      "discount": 0,
+      "total": 41,
+      "issuedAt": "2026-08-27T01:51:03.407Z",
+      "notes": "Awaiting customer approval.",
+      "createdAt": "2026-08-27T01:51:03.407Z"
+    },
+    {
+      "id": "9e5b556b-44cb-4d51-a37f-7401728401c9",
+      "quoteNumber": "Q-0002",
+      "customerId": "a867d129-f6e5-488b-aadc-a0321481ca99",
+      "status": "draft",
+      "materialCost": 3.1,
+      "electricityCost": 0.6,
+      "marginPercent": 30,
+      "discount": 0,
+      "total": 18.5,
+      "issuedAt": null,
+      "notes": "",
+      "createdAt": "2026-08-27T01:51:03.407Z"
+    },
+    {
+      "id": "f7642446-397a-4fd8-a2cd-eabe33997d12",
+      "quoteNumber": "Q-0003",
+      "customerId": "a1798823-119c-415b-9e77-fd431affc7e5",
+      "status": "accepted",
+      "materialCost": 42,
+      "electricityCost": 6,
+      "marginPercent": 28,
+      "discount": 15,
+      "total": 270,
+      "issuedAt": "2026-08-20T04:00:00.000Z",
+      "notes": "Converted to O-0003.",
+      "createdAt": "2026-08-19T04:00:00.000Z"
+    },
+    {
+      "id": "b6b9b208-2ecc-4de6-841a-cce5b4189f29",
+      "quoteNumber": "Q-0004",
+      "customerId": "639b6645-ec39-485c-a8b6-57d7239d44a2",
+      "status": "rejected",
+      "materialCost": 9,
+      "electricityCost": 1.5,
+      "marginPercent": 30,
+      "discount": 0,
+      "total": 33,
+      "issuedAt": "2026-07-02T04:00:00.000Z",
+      "notes": "Went with a competitor.",
+      "createdAt": "2026-07-01T04:00:00.000Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "04b761d8-e33f-4fa1-9ae9-0aa3eccf35c7",
+      "orderNumber": "O-0001",
+      "customerId": "113c477e-55d9-4438-9dd7-ac4c53d788bd",
+      "status": "printing",
+      "priority": "high",
+      "dueDate": "2026-08-30T01:51:03.407Z",
+      "fulfillment": "ship",
+      "total": 84,
+      "items": [
+        {
+          "productId": "e1c0e49b-ae9b-4132-a9e7-14dc0a675ed9",
+          "productName": "Cable Clip (5-pack)",
+          "qty": 4,
+          "price": 12
+        },
+        {
+          "productId": "a142abd0-fe59-4721-9da9-20f5e7987c93",
+          "productName": "Camera Mount Bracket",
+          "qty": 1,
+          "price": 22.5
+        }
+      ],
+      "printerId": "d3526ffb-dee7-45ce-99dc-eba02b29ebc7",
+      "fileName": "cable_clip_batch.gcode",
+      "estimatedSeconds": 5400,
+      "filamentUsedGrams": 180,
+      "startedAt": "2026-08-28T01:11:03.407Z",
+      "notes": "",
+      "createdAt": "2026-08-27T01:51:03.407Z"
+    },
+    {
+      "id": "c997622e-1ebc-45b8-8cf4-cd4175a61170",
+      "orderNumber": "O-0002",
+      "customerId": "639b6645-ec39-485c-a8b6-57d7239d44a2",
+      "status": "pending",
+      "priority": "normal",
+      "dueDate": "2026-09-02T01:51:03.407Z",
+      "fulfillment": "pickup",
+      "total": 38,
+      "items": [
+        {
+          "productId": "d22ccd2c-a71d-4d62-887d-1d50bcb6ae0d",
+          "productName": "Articulated Dragon",
+          "qty": 1,
+          "price": 38
+        }
+      ],
+      "printerId": null,
+      "fileName": null,
+      "filamentUsedGrams": null,
+      "notes": "Wants gold silk PLA.",
+      "createdAt": "2026-08-26T01:51:03.407Z"
+    },
+    {
+      "id": "dd02cd42-f434-4cde-a09c-a22480368807",
+      "orderNumber": "O-0003",
+      "customerId": "a1798823-119c-415b-9e77-fd431affc7e5",
+      "status": "post_processing",
+      "priority": "normal",
+      "dueDate": "2026-08-29T01:51:03.407Z",
+      "fulfillment": "ship",
+      "total": 270,
+      "items": [
+        {
+          "productId": "a142abd0-fe59-4721-9da9-20f5e7987c93",
+          "productName": "Camera Mount Bracket",
+          "qty": 12,
+          "price": 22.5
+        }
+      ],
+      "printerId": "90e7533d-aa81-40b1-a423-650e73749556",
+      "fileName": "camera_mount_x12.gcode",
+      "filamentUsedGrams": 620,
+      "notes": "B2B bulk order, needs sanding.",
+      "createdAt": "2026-08-24T01:51:03.407Z"
+    },
+    {
+      "id": "7f8d9ea9-64df-4b6f-b3c2-cb9aaed3d853",
+      "orderNumber": "O-0004",
+      "customerId": "860570d7-27ed-48da-82e7-d355b6715b3f",
+      "status": "fulfilled",
+      "priority": "low",
+      "dueDate": "2026-08-25T01:51:03.407Z",
+      "fulfillment": "pickup",
+      "total": 27,
+      "items": [
+        {
+          "productId": "38139c27-2954-4d85-bcf3-a6725c0ab361",
+          "productName": "Desk Organizer Tray",
+          "qty": 1,
+          "price": 27
+        }
+      ],
+      "printerId": "aeb12bc3-df8e-4d23-90c6-4b6e7ddf19b8",
+      "fileName": "desk_tray.gcode",
+      "filamentUsedGrams": 140,
+      "notes": "",
+      "createdAt": "2026-08-20T01:51:03.407Z"
+    },
+    {
+      "id": "c5625743-bd3c-403f-9f01-7f9a25349b89",
+      "orderNumber": "O-0005",
+      "customerId": "a867d129-f6e5-488b-aadc-a0321481ca99",
+      "status": "cancelled",
+      "priority": "normal",
+      "dueDate": "2026-08-27T01:51:03.407Z",
+      "fulfillment": "ship",
+      "total": 45,
+      "items": [
+        {
+          "productId": "e1c0e49b-ae9b-4132-a9e7-14dc0a675ed9",
+          "productName": "Cable Clip (5-pack)",
+          "qty": 2,
+          "price": 12
+        },
+        {
+          "productId": "38139c27-2954-4d85-bcf3-a6725c0ab361",
+          "productName": "Desk Organizer Tray",
+          "qty": 1,
+          "price": 27
+        }
+      ],
+      "printerId": null,
+      "fileName": null,
+      "filamentUsedGrams": null,
+      "notes": "Customer cancelled - duplicate order.",
+      "createdAt": "2026-08-23T01:51:03.407Z"
+    },
+    {
+      "id": "4a196b5f-8f15-447b-8790-540a0ee7dc1b",
+      "orderNumber": "O-0006",
+      "customerId": "113c477e-55d9-4438-9dd7-ac4c53d788bd",
+      "status": "fulfilled",
+      "priority": "normal",
+      "dueDate": "2026-07-10T04:00:00.000Z",
+      "fulfillment": "ship",
+      "total": 96,
+      "items": [
+        {
+          "productId": "d22ccd2c-a71d-4d62-887d-1d50bcb6ae0d",
+          "productName": "Articulated Dragon",
+          "qty": 2,
+          "price": 38
+        },
+        {
+          "productId": "e1c0e49b-ae9b-4132-a9e7-14dc0a675ed9",
+          "productName": "Cable Clip (5-pack)",
+          "qty": 1,
+          "price": 12
+        }
+      ],
+      "printerId": "d3526ffb-dee7-45ce-99dc-eba02b29ebc7",
+      "fileName": "dragon_x2.gcode",
+      "filamentUsedGrams": 260,
+      "notes": "",
+      "createdAt": "2026-07-08T04:00:00.000Z"
+    },
+    {
+      "id": "bc9b1be7-2058-42bb-b8d4-9ecbbfd80f83",
+      "orderNumber": "O-0007",
+      "customerId": "a1798823-119c-415b-9e77-fd431affc7e5",
+      "status": "fulfilled",
+      "priority": "high",
+      "dueDate": "2026-06-20T04:00:00.000Z",
+      "fulfillment": "ship",
+      "total": 450,
+      "items": [
+        {
+          "productId": "a142abd0-fe59-4721-9da9-20f5e7987c93",
+          "productName": "Camera Mount Bracket",
+          "qty": 20,
+          "price": 22.5
+        }
+      ],
+      "printerId": "90e7533d-aa81-40b1-a423-650e73749556",
+      "fileName": "camera_mount_x20.gcode",
+      "filamentUsedGrams": 1040,
+      "notes": "B2B restock order.",
+      "createdAt": "2026-06-18T04:00:00.000Z"
+    },
+    {
+      "id": "512157b0-f6c5-41b4-8fae-fa606f82e62a",
+      "orderNumber": "O-0008",
+      "customerId": "639b6645-ec39-485c-a8b6-57d7239d44a2",
+      "status": "fulfilled",
+      "priority": "normal",
+      "dueDate": "2026-05-05T04:00:00.000Z",
+      "fulfillment": "pickup",
+      "total": 54,
+      "items": [
+        {
+          "productId": "e1c0e49b-ae9b-4132-a9e7-14dc0a675ed9",
+          "productName": "Cable Clip (5-pack)",
+          "qty": 3,
+          "price": 12
+        },
+        {
+          "productId": "38139c27-2954-4d85-bcf3-a6725c0ab361",
+          "productName": "Desk Organizer Tray",
+          "qty": 1,
+          "price": 18
+        }
+      ],
+      "printerId": "aeb12bc3-df8e-4d23-90c6-4b6e7ddf19b8",
+      "fileName": "mixed_batch.gcode",
+      "filamentUsedGrams": 210,
+      "notes": "",
+      "createdAt": "2026-05-03T04:00:00.000Z"
+    }
+  ],
+  "invoices": [
+    {
+      "id": "0b87ccc0-bf24-4803-9acd-e41e3c067c31",
+      "invoiceNumber": "INV-0001",
+      "customerId": "a1798823-119c-415b-9e77-fd431affc7e5",
+      "orderId": "dd02cd42-f434-4cde-a09c-a22480368807",
+      "status": "outstanding",
+      "issuedAt": "2026-08-26T01:51:03.407Z",
+      "dueAt": "2026-09-09T01:51:03.407Z",
+      "total": 270,
+      "createdAt": "2026-08-26T01:51:03.407Z"
+    },
+    {
+      "id": "4449d8bc-6053-49ac-83e4-ac3c27f571ce",
+      "invoiceNumber": "INV-0002",
+      "customerId": "113c477e-55d9-4438-9dd7-ac4c53d788bd",
+      "orderId": "04b761d8-e33f-4fa1-9ae9-0aa3eccf35c7",
+      "status": "draft",
+      "issuedAt": null,
+      "dueAt": null,
+      "total": 84,
+      "createdAt": "2026-08-27T01:51:03.407Z"
+    },
+    {
+      "id": "5dcec4e9-162a-4611-9fac-81fae5f88a33",
+      "invoiceNumber": "INV-0003",
+      "customerId": "113c477e-55d9-4438-9dd7-ac4c53d788bd",
+      "orderId": "4a196b5f-8f15-447b-8790-540a0ee7dc1b",
+      "status": "paid",
+      "issuedAt": "2026-07-08T04:00:00.000Z",
+      "dueAt": "2026-07-22T04:00:00.000Z",
+      "paidAt": "2026-07-15T04:00:00.000Z",
+      "total": 96,
+      "createdAt": "2026-07-08T04:00:00.000Z"
+    },
+    {
+      "id": "73fd0e70-4b27-41b4-ad2c-9b7ea7f8de8a",
+      "invoiceNumber": "INV-0004",
+      "customerId": "a1798823-119c-415b-9e77-fd431affc7e5",
+      "orderId": "bc9b1be7-2058-42bb-b8d4-9ecbbfd80f83",
+      "status": "overdue",
+      "issuedAt": "2026-06-18T04:00:00.000Z",
+      "dueAt": "2026-08-13T01:51:03.407Z",
+      "total": 450,
+      "createdAt": "2026-06-18T04:00:00.000Z"
+    },
+    {
+      "id": "bbadf80e-56ac-4d90-a0b5-2e17f5022a16",
+      "invoiceNumber": "INV-0005",
+      "customerId": "860570d7-27ed-48da-82e7-d355b6715b3f",
+      "orderId": "7f8d9ea9-64df-4b6f-b3c2-cb9aaed3d853",
+      "status": "paid",
+      "issuedAt": "2026-08-20T01:51:03.407Z",
+      "dueAt": "2026-09-03T01:51:03.407Z",
+      "paidAt": "2026-08-22T01:51:03.407Z",
+      "total": 27,
+      "createdAt": "2026-08-20T01:51:03.407Z"
+    }
+  ],
+  "printers": [
+    {
+      "id": "d3526ffb-dee7-45ce-99dc-eba02b29ebc7",
+      "name": "Bambu H2C",
+      "model": "Bambu Lab H2C",
+      "type": "mock",
+      "host": "",
+      "apiKey": "",
+      "powerDrawWatts": 350,
+      "printHours": 204,
+      "notes": "Demo printer - no hardware needed.",
+      "createdAt": "2026-02-01T05:00:00.000Z"
+    },
+    {
+      "id": "aeb12bc3-df8e-4d23-90c6-4b6e7ddf19b8",
+      "name": "Bambu H2D",
+      "model": "Bambu Lab H2D",
+      "type": "mock",
+      "host": "",
+      "apiKey": "",
+      "powerDrawWatts": 350,
+      "printHours": 132,
+      "notes": "Demo printer - no hardware needed.",
+      "createdAt": "2026-03-01T05:00:00.000Z"
+    },
+    {
+      "id": "90e7533d-aa81-40b1-a423-650e73749556",
+      "name": "P2S #1",
+      "model": "Bambu Lab P2S",
+      "type": "mock",
+      "host": "",
+      "apiKey": "",
+      "powerDrawWatts": 220,
+      "printHours": 340,
+      "notes": "",
+      "createdAt": "2025-12-01T05:00:00.000Z"
+    },
+    {
+      "id": "59661125-e438-4f10-8474-8f11e97b6c58",
+      "name": "P2S #2",
+      "model": "Bambu Lab P2S",
+      "type": "mock",
+      "host": "",
+      "apiKey": "",
+      "powerDrawWatts": 220,
+      "printHours": 289,
+      "notes": "",
+      "createdAt": "2025-12-01T05:00:00.000Z"
+    },
+    {
+      "id": "83794d9a-806e-49fc-a269-a4df558a9253",
+      "name": "Snapmaker U1",
+      "model": "Snapmaker U1",
+      "type": "octoprint",
+      "host": "http://octopi.local",
+      "apiKey": "CHANGE_ME",
+      "powerDrawWatts": 180,
+      "printHours": 28,
+      "notes": "Example real OctoPrint connection - update host/apiKey to connect for real.",
+      "createdAt": "2026-07-01T04:00:00.000Z"
+    }
+  ],
+  "maintenanceSchedules": [
+    {
+      "id": "adb9268d-389f-4b0f-9297-883596da8f13",
+      "printerId": "d3526ffb-dee7-45ce-99dc-eba02b29ebc7",
+      "task": "Nozzle replacement",
+      "intervalDays": 60,
+      "lastServicedAt": "2026-07-09T01:51:03.407Z",
+      "notes": "0.4mm brass",
+      "createdAt": "2026-05-01T04:00:00.000Z"
+    },
+    {
+      "id": "b9dd86f3-d932-4c03-824e-93db4518cef2",
+      "printerId": "d3526ffb-dee7-45ce-99dc-eba02b29ebc7",
+      "task": "Bed leveling check",
+      "intervalDays": 14,
+      "lastServicedAt": "2026-08-25T01:51:03.407Z",
+      "notes": "",
+      "createdAt": "2026-05-01T04:00:00.000Z"
+    },
+    {
+      "id": "c292b1d2-36de-49f0-aaa1-57a35d9a9aae",
+      "printerId": "90e7533d-aa81-40b1-a423-650e73749556",
+      "task": "Belt tension check",
+      "intervalDays": 30,
+      "lastServicedAt": "2026-07-19T01:51:03.407Z",
+      "notes": "Overdue - schedule soon.",
+      "createdAt": "2026-04-01T04:00:00.000Z"
+    },
+    {
+      "id": "db294be4-7865-498c-9545-97c7dffd58aa",
+      "printerId": "83794d9a-806e-49fc-a269-a4df558a9253",
+      "task": "Firmware update check",
+      "intervalDays": 45,
+      "lastServicedAt": "2026-08-23T01:51:03.407Z",
+      "notes": "",
+      "createdAt": "2026-07-01T04:00:00.000Z"
+    }
+  ],
+  "maintenanceLog": [
+    {
+      "id": "2e435c98-b0d5-4579-8700-3b6b06b87cd6",
+      "printerId": "d3526ffb-dee7-45ce-99dc-eba02b29ebc7",
+      "scheduleId": "b9dd86f3-d932-4c03-824e-93db4518cef2",
+      "date": "2026-08-25T01:51:03.407Z",
+      "downtimeMinutes": 25,
+      "notes": "Routine bed leveling.",
+      "createdAt": "2026-08-25T01:51:03.407Z"
+    },
+    {
+      "id": "b57fc2fa-e08a-43d3-b313-ac5fb73aa53a",
+      "printerId": "90e7533d-aa81-40b1-a423-650e73749556",
+      "scheduleId": null,
+      "date": "2026-08-16T01:51:03.407Z",
+      "downtimeMinutes": 90,
+      "notes": "Clogged nozzle, cleared.",
+      "createdAt": "2026-08-16T01:51:03.407Z"
+    },
+    {
+      "id": "a8ce2017-004c-419e-80c2-1467e049471e",
+      "printerId": "aeb12bc3-df8e-4d23-90c6-4b6e7ddf19b8",
+      "scheduleId": null,
+      "date": "2026-07-06T04:00:00.000Z",
+      "downtimeMinutes": 45,
+      "notes": "Extruder gear slipping, tightened.",
+      "createdAt": "2026-07-06T04:00:00.000Z"
+    },
+    {
+      "id": "fbfb4693-4b2b-413d-873e-d663fb890f90",
+      "printerId": "59661125-e438-4f10-8474-8f11e97b6c58",
+      "scheduleId": null,
+      "date": "2026-07-20T04:00:00.000Z",
+      "downtimeMinutes": 120,
+      "notes": "Hotend replacement.",
+      "createdAt": "2026-07-20T04:00:00.000Z"
+    },
+    {
+      "id": "e0441ea2-32cc-4dab-975c-e438c016556a",
+      "printerId": "d3526ffb-dee7-45ce-99dc-eba02b29ebc7",
+      "scheduleId": null,
+      "date": "2026-06-10T04:00:00.000Z",
+      "downtimeMinutes": 30,
+      "notes": "Belt tightening.",
+      "createdAt": "2026-06-10T04:00:00.000Z"
+    },
+    {
+      "id": "65a287f8-83c8-4d29-9f20-8496b44fa338",
+      "printerId": "90e7533d-aa81-40b1-a423-650e73749556",
+      "scheduleId": null,
+      "date": "2026-05-05T04:00:00.000Z",
+      "downtimeMinutes": 60,
+      "notes": "PSU fan replaced.",
+      "createdAt": "2026-05-05T04:00:00.000Z"
+    }
+  ],
+  "spools": [
+    {
+      "id": "da46f5d3-d3ff-4b96-ad16-4a872f803d81",
+      "spoolNumber": "SP-0001",
+      "brand": "Prusament",
+      "material": "PLA",
+      "color": "Galaxy Black",
+      "totalWeightGrams": 1000,
+      "remainingWeightGrams": 730,
+      "lowStockThresholdGrams": 150,
+      "location": "Shelf A1",
+      "lastDriedAt": "2026-08-19T01:51:03.407Z",
+      "spoolPrice": 29.99,
+      "createdAt": "2026-05-01T04:00:00.000Z"
+    },
+    {
+      "id": "654c045e-82dd-4647-a16e-8260d575df7c",
+      "spoolNumber": "SP-0002",
+      "brand": "Overture",
+      "material": "PETG",
+      "color": "Clear",
+      "totalWeightGrams": 1000,
+      "remainingWeightGrams": 90,
+      "lowStockThresholdGrams": 150,
+      "location": "Shelf A2",
+      "lastDriedAt": "2026-08-26T01:51:03.407Z",
+      "spoolPrice": 21.99,
+      "createdAt": "2026-05-01T04:00:00.000Z"
+    },
+    {
+      "id": "9096abbc-0d25-44ed-9df0-dfe6199850c5",
+      "spoolNumber": "SP-0003",
+      "brand": "Polymaker",
+      "material": "PLA Silk",
+      "color": "Gold",
+      "totalWeightGrams": 750,
+      "remainingWeightGrams": 750,
+      "lowStockThresholdGrams": 150,
+      "location": "Shelf B1",
+      "lastDriedAt": null,
+      "spoolPrice": 27.5,
+      "createdAt": "2026-08-14T01:51:03.407Z"
+    },
+    {
+      "id": "94bf0419-43ed-4a61-9829-23b7f2952328",
+      "spoolNumber": "SP-0004",
+      "brand": "eSun",
+      "material": "ABS",
+      "color": "Gray",
+      "totalWeightGrams": 1000,
+      "remainingWeightGrams": 410,
+      "lowStockThresholdGrams": 150,
+      "location": "Shelf A3",
+      "lastDriedAt": "2026-08-08T01:51:03.407Z",
+      "spoolPrice": 19.99,
+      "createdAt": "2026-04-01T04:00:00.000Z"
+    }
+  ],
+  "products": [
+    {
+      "id": "e1c0e49b-ae9b-4132-a9e7-14dc0a675ed9",
+      "name": "Cable Clip (5-pack)",
+      "sku": "CC-005",
+      "price": 12,
+      "stock": 84,
+      "calculatedCost": 3.1,
+      "variants": [
+        {
+          "name": "Black",
+          "sku": "CC-005-BLK"
+        },
+        {
+          "name": "White",
+          "sku": "CC-005-WHT"
+        }
+      ],
+      "notes": "0.2mm layer, 15% infill.",
+      "createdAt": "2026-02-02T05:00:00.000Z"
+    },
+    {
+      "id": "d22ccd2c-a71d-4d62-887d-1d50bcb6ae0d",
+      "name": "Articulated Dragon",
+      "sku": "ART-DRG",
+      "price": 38,
+      "stock": 12,
+      "calculatedCost": 9.4,
+      "variants": [
+        {
+          "name": "Silk Gold"
+        },
+        {
+          "name": "Silk Copper"
+        }
+      ],
+      "notes": "Print-in-place, PLA silk recommended.",
+      "createdAt": "2026-03-10T04:00:00.000Z"
+    },
+    {
+      "id": "a142abd0-fe59-4721-9da9-20f5e7987c93",
+      "name": "Camera Mount Bracket",
+      "sku": "CAM-MNT",
+      "price": 22.5,
+      "stock": 30,
+      "calculatedCost": 6.8,
+      "variants": [],
+      "notes": "PETG for outdoor durability.",
+      "createdAt": "2026-04-05T04:00:00.000Z"
+    },
+    {
+      "id": "38139c27-2954-4d85-bcf3-a6725c0ab361",
+      "name": "Desk Organizer Tray",
+      "sku": "DSK-TRAY",
+      "price": 27,
+      "stock": 18,
+      "calculatedCost": 8.2,
+      "variants": [
+        {
+          "name": "Small"
+        },
+        {
+          "name": "Large"
+        }
+      ],
+      "notes": "",
+      "createdAt": "2026-06-15T04:00:00.000Z"
+    }
+  ],
+  "inventoryItems": [
+    {
+      "id": "6b81ce34-60a2-40f3-9a30-73ff253f09e7",
+      "name": "Cardboard shipping boxes (M)",
+      "quantity": 42,
+      "unitPrice": 0.65,
+      "lowStockThreshold": 20,
+      "expiry": null,
+      "createdAt": "2026-06-01T04:00:00.000Z"
+    },
+    {
+      "id": "0bbc13d6-80d3-411d-b569-87fc1d612bb6",
+      "name": "Nozzles 0.4mm (brass)",
+      "quantity": 6,
+      "unitPrice": 3.2,
+      "lowStockThreshold": 8,
+      "expiry": null,
+      "createdAt": "2026-06-01T04:00:00.000Z"
+    },
+    {
+      "id": "55b07907-490f-47c2-af7b-4d1a83f6a5fe",
+      "name": "Build plate adhesive glue sticks",
+      "quantity": 3,
+      "unitPrice": 4,
+      "lowStockThreshold": 5,
+      "expiry": null,
+      "createdAt": "2026-07-01T04:00:00.000Z"
+    },
+    {
+      "id": "f5390d49-d485-4637-808d-b2b9ec6d8a83",
+      "name": "Silica gel packs",
+      "quantity": 25,
+      "unitPrice": 0.2,
+      "lowStockThreshold": 10,
+      "expiry": null,
+      "createdAt": "2026-07-01T04:00:00.000Z"
+    }
+  ],
+  "expenses": [
+    {
+      "id": "33391012-e952-47d1-b64a-c58c126fdfde",
+      "date": "2026-08-25T01:51:03.407Z",
+      "category": "Filament",
+      "description": "Bulk PLA restock",
+      "amount": 180,
+      "recurring": false,
+      "createdAt": "2026-08-25T01:51:03.407Z"
+    },
+    {
+      "id": "c902115b-a329-4573-a76a-e6ff2e3a1f8c",
+      "date": "2026-08-22T01:51:03.407Z",
+      "category": "Shipping",
+      "description": "Postage - weekly batch",
+      "amount": 42.5,
+      "recurring": false,
+      "createdAt": "2026-08-22T01:51:03.407Z"
+    },
+    {
+      "id": "efb348e8-c23e-4848-9c34-455d81e69819",
+      "date": "2026-08-18T01:51:03.407Z",
+      "category": "Software",
+      "description": "Slicer Pro subscription",
+      "amount": 15,
+      "recurring": true,
+      "createdAt": "2026-08-18T01:51:03.407Z"
+    },
+    {
+      "id": "e586a0c9-464f-4c81-b34e-b98a8547e73e",
+      "date": "2026-08-01T04:00:00.000Z",
+      "category": "Electricity",
+      "description": "Shop power bill",
+      "amount": 64,
+      "recurring": true,
+      "createdAt": "2026-08-01T04:00:00.000Z"
+    },
+    {
+      "id": "c96f2f5b-a736-49e6-89c1-9726c6af9059",
+      "date": "2026-07-04T04:00:00.000Z",
+      "category": "Filament",
+      "description": "PETG + ABS restock",
+      "amount": 210,
+      "recurring": false,
+      "createdAt": "2026-07-04T04:00:00.000Z"
+    },
+    {
+      "id": "acd36d5e-f518-4549-8031-f8ad5ed47983",
+      "date": "2026-07-01T04:00:00.000Z",
+      "category": "Electricity",
+      "description": "Shop power bill",
+      "amount": 58,
+      "recurring": true,
+      "createdAt": "2026-07-01T04:00:00.000Z"
+    },
+    {
+      "id": "b30280ad-0cc9-472a-ba44-289ad198fc7e",
+      "date": "2026-07-12T04:00:00.000Z",
+      "category": "Maintenance",
+      "description": "Replacement nozzles + hotend",
+      "amount": 38,
+      "recurring": false,
+      "createdAt": "2026-07-12T04:00:00.000Z"
+    },
+    {
+      "id": "bb0b00bd-d907-4e49-bfd7-8c160a22b234",
+      "date": "2026-06-01T04:00:00.000Z",
+      "category": "Electricity",
+      "description": "Shop power bill",
+      "amount": 61,
+      "recurring": true,
+      "createdAt": "2026-06-01T04:00:00.000Z"
+    },
+    {
+      "id": "d18ca505-276d-4c5d-ba85-08b41c2e0a2e",
+      "date": "2026-06-09T04:00:00.000Z",
+      "category": "Filament",
+      "description": "PLA + Silk restock",
+      "amount": 165,
+      "recurring": false,
+      "createdAt": "2026-06-09T04:00:00.000Z"
+    },
+    {
+      "id": "b79e3361-95cd-4d93-9fc9-f1771cc2cb0f",
+      "date": "2026-05-01T04:00:00.000Z",
+      "category": "Electricity",
+      "description": "Shop power bill",
+      "amount": 55,
+      "recurring": true,
+      "createdAt": "2026-05-01T04:00:00.000Z"
+    },
+    {
+      "id": "474b9cf0-145f-44d0-9391-acdb32331de0",
+      "date": "2026-05-15T04:00:00.000Z",
+      "category": "Shipping",
+      "description": "Postage - monthly",
+      "amount": 95,
+      "recurring": false,
+      "createdAt": "2026-05-15T04:00:00.000Z"
+    },
+    {
+      "id": "6968dcd9-76ba-4e3d-b23c-0a99ea4a74f4",
+      "date": "2026-04-01T04:00:00.000Z",
+      "category": "Electricity",
+      "description": "Shop power bill",
+      "amount": 52,
+      "recurring": true,
+      "createdAt": "2026-04-01T04:00:00.000Z"
+    }
+  ],
+  "settings": {
+    "workspaceName": "Rivera Print Co.",
+    "contactEmail": "lacosta0217@gmail.com",
+    "contactPhone": "555-0100",
+    "identifierLabel": "CoC (default)",
+    "currency": "USD",
+    "country": "United States",
+    "timezone": "America/New_York",
+    "dateFormat": "Auto (from country)",
+    "numberFormat": "Auto (from country)",
+    "quoteNumberPrefix": "Q-",
+    "orderNumberPrefix": "O-",
+    "invoiceNumberPrefix": "INV-",
+    "hourlyRate": 25,
+    "electricityRatePerKwh": 0.15,
+    "defaultMarginPercent": 30
+  }
+}

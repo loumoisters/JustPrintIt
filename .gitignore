@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+*.log
+.env
+
+# Live app data - never commit this. db.example.json (checked in) is used
+# to bootstrap a fresh install; data/db.json is your real, private data.
+data/db.json
+data/uploads/
