@@ -187,6 +187,7 @@ const maintenanceLog = [
 // ---------- Settings ----------
 
 const settings = {
+  yourName: 'Lou Moist',
   workspaceName: 'Rivera Print Co.',
   contactEmail: 'lacosta0217@gmail.com',
   contactPhone: '555-0100',

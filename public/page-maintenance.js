@@ -99,13 +99,13 @@ async function renderMaintenance() {
       if (editBtn) editBtn.onclick = () => openModal('Edit Schedule', scheduleFormFields(s), async (data) => {
         await api('PUT', `/api/maintenanceSchedules/${s.id}`, data);
         showToast('Schedule updated');
-        await renderMaintenance();
+        await refreshAndRerender();
       });
       if (delBtn) delBtn.onclick = async () => {
         if (!confirm('Delete this schedule?')) return;
         await api('DELETE', `/api/maintenanceSchedules/${s.id}`);
         showToast('Schedule deleted');
-        await renderMaintenance();
+        await refreshAndRerender();
       };
     });
   } else {
@@ -134,13 +134,13 @@ async function renderMaintenance() {
       if (editBtn) editBtn.onclick = () => openModal('Edit Log Entry', logFormFields(l), async (data) => {
         await api('PUT', `/api/maintenanceLog/${l.id}`, data);
         showToast('Log entry updated');
-        await renderMaintenance();
+        await refreshAndRerender();
       });
       if (delBtn) delBtn.onclick = async () => {
         if (!confirm('Delete this log entry?')) return;
         await api('DELETE', `/api/maintenanceLog/${l.id}`);
         showToast('Log entry deleted');
-        await renderMaintenance();
+        await refreshAndRerender();
       };
     });
   }
@@ -150,13 +150,13 @@ async function renderMaintenance() {
       openModal('New Schedule', scheduleFormFields(), async (data) => {
         await api('POST', '/api/maintenanceSchedules', data);
         showToast('Schedule added');
-        await renderMaintenance();
+        await refreshAndRerender();
       });
     } else {
       openModal('New Log Entry', logFormFields(), async (data) => {
         await api('POST', '/api/maintenanceLog', data);
         showToast('Log entry added');
-        await renderMaintenance();
+        await refreshAndRerender();
       });
     }
   };

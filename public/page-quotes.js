@@ -366,7 +366,7 @@ function wireQuoteModalEvents() {
         showToast('Quote created');
       }
       closeModal();
-      await navigate('quotes');
+      await refreshAndRerender();
     } catch (err) {
       showToast(err.message, true);
     }
@@ -450,7 +450,7 @@ async function renderQuotes() {
       if (!confirm('Delete this quote?')) return;
       await api('DELETE', `/api/quotes/${q.id}`);
       showToast('Quote deleted');
-      await renderQuotes();
+      await refreshAndRerender();
     };
   });
 

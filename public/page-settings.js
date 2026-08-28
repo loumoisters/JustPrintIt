@@ -108,6 +108,9 @@ async function renderSettings() {
 
   if (settingsTab === 'general') {
     content.innerHTML = `
+      ${renderFormCard('Your account', 'Shown in the sidebar - not used for login, just display.', [
+        { name: 'yourName', label: 'Your name' },
+      ])}
       ${renderFormCard('Business info', "Your shop's name, logo, and contact details.", [
         { name: 'workspaceName', label: 'Workspace name' },
         { name: 'contactEmail', label: 'Contact email' },

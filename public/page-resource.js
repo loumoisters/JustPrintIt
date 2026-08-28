@@ -54,13 +54,13 @@ function renderResourcePage(config) {
         if (editBtn) editBtn.onclick = () => openModal(`Edit ${config.singular}`, config.formFields(item), async (data) => {
           await api('PUT', `/api/${config.key}/${item.id}`, data);
           showToast(`${config.singular} updated`);
-          await navigate(state.page);
+          await refreshAndRerender();
         });
         if (delBtn) delBtn.onclick = async () => {
           if (!confirm(`Delete this ${config.singular.toLowerCase()}?`)) return;
           await api('DELETE', `/api/${config.key}/${item.id}`);
           showToast(`${config.singular} deleted`);
-          await navigate(state.page);
+          await refreshAndRerender();
         };
       });
     };
@@ -70,7 +70,7 @@ function renderResourcePage(config) {
       openModal(`New ${config.singular}`, config.formFields(), async (data) => {
         await api('POST', `/api/${config.key}`, data);
         showToast(`${config.singular} added`);
-        await navigate(state.page);
+        await refreshAndRerender();
       });
     };
   };

@@ -58,8 +58,10 @@ function printerFormFields(printer = {}) {
   ];
 }
 
-async function renderPrinters() {
+async function renderPrinters(navEpochAtStart = navEpoch) {
   await refreshStatuses();
+  if (!isCurrentNav(navEpochAtStart)) return; // user already navigated elsewhere
+
   const main = document.getElementById('main');
   main.innerHTML = `
     <div class="page-header">
@@ -93,13 +95,15 @@ async function renderPrinters() {
     openModal('New Printer', printerFormFields(), async (data) => {
       await api('POST', '/api/printers', data);
       showToast('Printer added');
-      await renderPrinters();
+      await refreshAndRerender();
     });
   };
 
   if (printersView === 'live') {
     state.pollTimer = setInterval(async () => {
+      if (state.page !== 'printers') return;
       await refreshStatuses();
+      if (state.page !== 'printers') return;
       grid.innerHTML = state.printers.map(printerCardHtml).join('');
       wirePrinterCardActions();
     }, 5000);
@@ -113,13 +117,13 @@ function wirePrinterCardActions() {
     if (editBtn) editBtn.onclick = () => openModal('Edit Printer', printerFormFields(p), async (data) => {
       await api('PUT', `/api/printers/${p.id}`, data);
       showToast('Printer updated');
-      await renderPrinters();
+      await refreshAndRerender();
     });
     if (delBtn) delBtn.onclick = async () => {
       if (!confirm(`Delete printer "${p.name}"?`)) return;
       await api('DELETE', `/api/printers/${p.id}`);
       showToast('Printer deleted');
-      await renderPrinters();
+      await refreshAndRerender();
     };
   });
 }

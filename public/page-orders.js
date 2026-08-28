@@ -26,8 +26,14 @@ function renderKanbanBoard(elId, orders) {
         return `
           <div class="kanban-column" data-status="${s}">
             <div class="kanban-column-header">
-              <span>${ORDER_STATUS_LABELS[s]}</span>
-              <span class="count">${items.length}</span>
+              <span style="display:flex; align-items:center; gap:6px;">
+                <span style="width:7px; height:7px; border-radius:999px; background:${ORDER_STATUS_DOT[s]}; flex-shrink:0;"></span>
+                ${ORDER_STATUS_LABELS[s]}
+              </span>
+              <span style="display:flex; align-items:center; gap:6px;">
+                <span class="count">${items.length}</span>
+                <span class="muted" style="cursor:default;" title="Column options (not implemented)">${icon('more', 13)}</span>
+              </span>
             </div>
             <div class="kanban-drop-zone" data-status="${s}" style="min-height:40px;">
               ${items.map(orderCardHtml).join('')}
@@ -56,8 +62,7 @@ function renderKanbanBoard(elId, orders) {
       try {
         await api('PUT', `/api/orders/${draggedId}`, { status: newStatus });
         showToast(`Moved to ${ORDER_STATUS_LABELS[newStatus]}`);
-        if (state.page === 'orders') await renderOrders();
-        else if (state.page === 'dashboard') await renderDashboard();
+        await refreshAndRerender();
       } catch (err) {
         showToast(err.message, true);
       }
@@ -156,20 +161,20 @@ async function renderOrders() {
     if (editBtn) editBtn.onclick = () => openModal('Edit Order', orderFormFields(o), async (data) => {
       await api('PUT', `/api/orders/${o.id}`, data);
       showToast('Order updated');
-      await renderOrders();
+      await refreshAndRerender();
     });
     if (delBtn) delBtn.onclick = async () => {
       if (!confirm('Delete this order?')) return;
       await api('DELETE', `/api/orders/${o.id}`);
       showToast('Order deleted');
-      await renderOrders();
+      await refreshAndRerender();
     };
   });
 
   document.getElementById('add-order').onclick = () => openModal('New Order', orderFormFields(), async (data) => {
     await api('POST', '/api/orders', data);
     showToast('Order created');
-    await renderOrders();
+    await refreshAndRerender();
   });
 }
 

@@ -14,9 +14,9 @@ function initTheme() {
 
 (async function start() {
   try {
-    state.settings = await api('GET', '/api/settings');
+    await refreshCollections(); // populate the client-side cache once at boot
   } catch (err) {
-    console.error('Failed to load settings', err);
+    console.error('Failed to load initial data', err);
   }
   initShell();
   initTheme();

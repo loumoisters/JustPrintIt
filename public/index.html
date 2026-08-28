@@ -3,20 +3,29 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Print Fleet Manager</title>
+  <title>JustPrintIt</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
   <div class="app-shell">
     <nav class="sidebar">
       <div class="brand">
-        <span class="mark">FT</span> FoxTrack Clone
-        <button id="theme-toggle" class="btn ghost small" style="margin-left:auto; padding:4px 7px;" title="Toggle dark mode">🌓</button>
+        <span class="mark">JP</span> JustPrintIt
       </div>
       <div id="sidebar-nav"></div>
       <div class="sidebar-footer" id="sidebar-footer"></div>
     </nav>
     <div class="main-scroll">
+      <div class="topbar">
+        <button class="icon-btn" id="sidebar-collapse-btn" data-icon="panel" title="Toggle sidebar"></button>
+        <span class="topbar-title" id="topbar-title">Dashboard</span>
+        <div class="topbar-actions">
+          <button class="icon-btn" id="topbar-bell" data-icon="bell" title="Notifications"></button>
+          <button class="icon-btn" id="topbar-sparkles" data-icon="sparkles" title="Assistant"></button>
+          <button class="icon-btn" id="topbar-help" data-icon="help" title="Help"></button>
+          <button class="icon-btn" id="theme-toggle" data-icon="moon" title="Toggle dark mode"></button>
+        </div>
+      </div>
       <main class="main" id="main"></main>
     </div>
   </div>

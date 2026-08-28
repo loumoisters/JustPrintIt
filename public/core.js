@@ -16,6 +16,14 @@ const ORDER_STATUS_LABELS = {
   pending: 'Pending', printing: 'Printing', post_processing: 'Post-Processing',
   fulfilled: 'Fulfilled', cancelled: 'Cancelled',
 };
+// Dot colors for the Active Orders donut chart / kanban column headers.
+const ORDER_STATUS_DOT = {
+  pending: 'var(--status-purple-fg)',
+  printing: 'var(--status-amber-fg)',
+  post_processing: 'var(--status-blue-fg)',
+  fulfilled: 'var(--status-green-fg)',
+  cancelled: 'var(--status-red-fg)',
+};
 
 // ---------- API helper ----------
 
@@ -195,6 +203,15 @@ const ICONS = {
   trash: '<path d="M3 6h18M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',
   menu: '<path d="M3 12h18M3 6h18M3 18h18"/>',
   x: '<path d="M18 6 6 18M6 6l12 12"/>',
+  panel: '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>',
+  bell: '<path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>',
+  sparkles: '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>',
+  help: '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+  moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  chevronUpDown: '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>',
+  more: '<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
+  chevronLeft: '<path d="m15 18-6-6 6-6"/>',
+  chevronRight: '<path d="m9 18 6-6-6-6"/>',
 };
 
 function icon(name, size = 16) {
@@ -202,8 +219,16 @@ function icon(name, size = 16) {
 }
 
 // ---------- Data loading ----------
+//
+// All collections are cached client-side in `state`. Page navigation
+// (clicking the sidebar) re-renders from that cache instantly - it does
+// NOT hit the network. Data is only refetched:
+//   1. once when the app boots (app-init.js)
+//   2. after any create/update/delete, via refreshAndRerender()
+// This is what makes clicking around the sidebar feel instant instead of
+// re-fetching all 12 collections on every single click.
 
-async function loadAll() {
+async function refreshCollections() {
   const [
     customers, quotes, orders, invoices, printersList,
     maintenanceSchedules, maintenanceLog, spools, products, inventoryItems, expenses, settings,
@@ -245,28 +270,48 @@ function printerName(id) {
 
 // ---------- Router ----------
 
-const PAGES = [
-  { key: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
-  { key: 'quotes', label: 'Quotes', icon: 'quotes' },
-  { key: 'orders', label: 'Orders', icon: 'orders' },
-  { key: 'invoices', label: 'Invoices', icon: 'invoices' },
-  { key: 'customers', label: 'Customers', icon: 'customers' },
-  { key: 'printers', label: 'Printers', icon: 'printers' },
-  { key: 'maintenance', label: 'Maintenance', icon: 'maintenance' },
-  { key: 'filament', label: 'Filament', icon: 'filament' },
-  { key: 'products', label: 'Products', icon: 'products' },
-  { key: 'inventory', label: 'Inventory', icon: 'inventory' },
-  { key: 'expenses', label: 'Expenses', icon: 'expenses' },
-  { key: 'reports', label: 'Reports', icon: 'reports' },
-  { key: 'settings', label: 'Settings', icon: 'settings' },
+// Grouped to match FoxTrack's sidebar sections. `label: null` sections
+// render with no header (Dashboard up top, Settings pinned at the bottom).
+const NAV_SECTIONS = [
+  { label: null, items: [
+    { key: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
+  ] },
+  { label: 'Sales', items: [
+    { key: 'quotes', label: 'Quotes', icon: 'quotes' },
+    { key: 'orders', label: 'Orders', icon: 'orders' },
+    { key: 'invoices', label: 'Invoices', icon: 'invoices' },
+    { key: 'customers', label: 'Customers', icon: 'customers' },
+  ] },
+  { label: 'Production', items: [
+    { key: 'printers', label: 'Printers', icon: 'printers' },
+    { key: 'maintenance', label: 'Maintenance', icon: 'maintenance' },
+  ] },
+  { label: 'Stock', items: [
+    { key: 'filament', label: 'Filament', icon: 'filament' },
+    { key: 'products', label: 'Products', icon: 'products' },
+    { key: 'inventory', label: 'Inventory', icon: 'inventory' },
+  ] },
+  { label: 'Finance', items: [
+    { key: 'expenses', label: 'Expenses', icon: 'expenses' },
+    { key: 'reports', label: 'Reports', icon: 'reports' },
+  ] },
+  { label: null, items: [
+    { key: 'settings', label: 'Settings', icon: 'settings' },
+  ] },
 ];
+
+// Flat lookup, e.g. for the topbar breadcrumb title.
+const PAGES = NAV_SECTIONS.flatMap((s) => s.items);
 
 function renderSidebar() {
   const nav = document.getElementById('sidebar-nav');
-  nav.innerHTML = PAGES.map((p) => `
-    <div class="nav-item ${p.key === state.page ? 'active' : ''}" data-page="${p.key}">
-      ${icon(p.icon)}<span>${p.label}</span>
-    </div>
+  nav.innerHTML = NAV_SECTIONS.map((section) => `
+    ${section.label ? `<div class="nav-group-label">${section.label}</div>` : ''}
+    ${section.items.map((p) => `
+      <div class="nav-item ${p.key === state.page ? 'active' : ''}" data-page="${p.key}">
+        ${icon(p.icon)}<span>${p.label}</span>
+      </div>
+    `).join('')}
   `).join('');
   nav.querySelectorAll('.nav-item').forEach((el) => {
     el.addEventListener('click', () => navigate(el.dataset.page));
@@ -279,28 +324,66 @@ function registerPage(key, fn) {
   PAGE_RENDERERS[key] = fn;
 }
 
+// Bumped on every navigate() call. Page renderers that do async work before
+// touching the DOM (Dashboard, Printers - both fetch live printer status)
+// should check `isCurrentNav(myEpoch)` after each await and bail out if a
+// newer navigation has since started, so a slow response can't clobber
+// whatever page the user has since clicked to.
+let navEpoch = 0;
+
+function isCurrentNav(epoch) {
+  return epoch === navEpoch;
+}
+
 async function navigate(page) {
+  const myEpoch = ++navEpoch;
   state.page = page;
   document.querySelectorAll('.nav-item').forEach((el) => el.classList.toggle('active', el.dataset.page === page));
   if (state.pollTimer) { clearInterval(state.pollTimer); state.pollTimer = null; }
 
-  await loadAll();
+  const topbarTitle = document.getElementById('topbar-title');
+  if (topbarTitle) topbarTitle.textContent = PAGES.find((p) => p.key === page)?.label || page;
+
   const renderer = PAGE_RENDERERS[page];
   if (renderer) {
-    await renderer();
+    await renderer(myEpoch);
   } else {
     document.getElementById('main').innerHTML = `<div class="empty-state">Page not implemented.</div>`;
   }
 }
 
+function toggleSidebar() {
+  document.querySelector('.app-shell').classList.toggle('sidebar-collapsed');
+}
+
+// Call this after any create/update/delete so the next render reflects the
+// change, then re-renders the current page from the refreshed cache.
+async function refreshAndRerender() {
+  await refreshCollections();
+  await navigate(state.page);
+}
+
 function initShell() {
   renderSidebar();
+  document.querySelectorAll('[data-icon]').forEach((el) => {
+    el.innerHTML = icon(el.dataset.icon, 16);
+  });
   const footer = document.getElementById('sidebar-footer');
+  const name = state.settings.yourName || 'You';
   footer.innerHTML = `
-    <div class="avatar">${initials(state.settings.contactEmail || 'You')}</div>
-    <div style="min-width:0;">
-      <div style="font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(state.settings.workspaceName || 'My Workspace')}</div>
+    <div class="avatar">${initials(name)}</div>
+    <div style="min-width:0; flex:1;">
+      <div style="font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(name)}</div>
       <div class="muted" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:11px;">${escapeHtml(state.settings.contactEmail || '')}</div>
     </div>
+    <span class="muted" style="flex-shrink:0;">${icon('chevronUpDown', 14)}</span>
   `;
+
+  const collapseBtn = document.getElementById('sidebar-collapse-btn');
+  if (collapseBtn) collapseBtn.onclick = toggleSidebar;
+
+  ['topbar-bell', 'topbar-sparkles', 'topbar-help'].forEach((id) => {
+    const btn = document.getElementById(id);
+    if (btn) btn.onclick = () => showToast('Not wired up in this build yet');
+  });
 }
