@@ -1,6 +1,6 @@
-# Print Fleet Manager (FoxTrack-style)
+# Print Fleet Manager
 
-A self-hosted 3D printing shop manager, styled and structured after [FoxTrack](https://foxtrack.studio) (based on saved pages of the actual app): quotes, orders, invoices, customers, printer fleet, maintenance, filament, products, inventory, expenses, and reports, all in one dashboard.
+A self-hosted 3D printing shop manager: quotes, orders, invoices, customers, printer fleet, maintenance, filament, products, inventory, expenses, and reports, all in one dashboard.
 
 **Zero install required.** No npm packages, no build step, no framework — just Node's built-in `http` server and vanilla JS on the frontend. Data lives in a local JSON file (`data/db.json`).
 
@@ -26,7 +26,7 @@ Environment variables (all optional, see `.env.example`):
 | `DATA_DIR` | Where `db.json` is stored (default `./data`) - point this at a persistent volume when hosting |
 | `APP_USERNAME` / `APP_PASSWORD` | Set both to require an HTTP Basic Auth login. Unset = no auth (fine for local use only) |
 
-**Want this running on a real URL with Claude Code set up for ongoing changes?** See [`SETUP-AND-DEPLOY.md`](./SETUP-AND-DEPLOY.md) for a full beginner-friendly walkthrough (Git/GitHub, Claude Code, and deploying to Railway with persistent storage).
+**Want this running somewhere other than your terminal?** See [`SETUP-AND-DEPLOY.md`](./SETUP-AND-DEPLOY.md) for a full beginner-friendly walkthrough (Git/GitHub, Claude Code, and either a real public URL via Railway or running permanently in the background on your own Mac).
 
 ## Demo data
 
@@ -38,24 +38,25 @@ node scripts/seed.js
 
 Two printers use the `mock` connection type and simulate progress/temperatures with no real hardware, so the whole app — including the live printer status on Dashboard/Printers — works out of the box.
 
-## What's mirrored from FoxTrack vs. simplified
+## What's included vs. simplified
 
-This matches FoxTrack's page structure, navigation order, layout patterns (stat cards, kanban board, tabs, settings sidebar), and visual design (colors, spacing, type) as closely as hand-written vanilla JS/CSS reasonably allows. A few things are intentionally simplified since they either need a real backend/SaaS layer or weren't visible in the saved pages:
+The app covers a full print-shop workflow with a modern dashboard layout (stat cards, kanban board, tabs, settings sidebar) built entirely in hand-written vanilla JS/CSS. A few things are intentionally simplified since they'd need a real backend/SaaS layer to be worth building out:
 
 - **Settings**: General, Quoting, and Numbering tabs are fully functional. Billing, Team, Integrations, and similar SaaS-only tabs are stubbed with a placeholder — they don't apply to a self-hosted, single-user app.
 - **CSV import / CSV & PDF export**: buttons are present for visual fidelity but disabled — wiring them up is a good next step if you need it.
-- **Charts**: hand-rolled inline SVG bar charts (no charting library, so this stays dependency-free) rather than FoxTrack's actual chart component.
-- **Auth**: none. This is meant for a single user on a home network. Don't expose it to the open internet as-is.
+- **Charts**: hand-rolled inline SVG bar charts (no charting library, so this stays dependency-free).
+- **Auth**: optional HTTP Basic Auth (see `APP_USERNAME`/`APP_PASSWORD` above) — unset by default, which is fine for a single user on a home network but should be turned on before exposing this to the open internet.
 - **Quote → Order → Invoice automation**: creating one doesn't currently auto-generate the next (e.g. accepting a quote doesn't create an order). They're linked by ID (`order.customerId`, `invoice.orderId`, etc.) but the workflow is manual for now.
 
 ## Connecting real printers
 
-Edit a printer (Printers page → Edit) and set:
+Every printer currently runs on the simulated "mock" adapter (`lib/printers/mock.js`) - the New/Edit Printer pane no longer has connection fields. Live status and the print queue are deferred to a future "Bridge integration" pass; the OctoPrint and Moonraker adapters (`lib/printers/octoprint.js` / `moonraker.js`) are still in the codebase and functional, just not wired to any UI yet, since real printer connectivity will get its own dedicated setup flow later rather than living on the printer's own edit form.
 
-- **OctoPrint** — Connection type `OctoPrint`, host like `http://octopi.local`, and an API key from OctoPrint's Settings → API.
-- **Klipper (Moonraker)** — Connection type `Klipper (Moonraker)`, host like `http://<printer-ip>:7125`. API key only needed if Moonraker's trusted-client auth is disabled.
+## Filament lookup (SpoolmanDB)
 
-Status polls every 5 seconds while Dashboard, or the Printers page in "Live" view, is open.
+The "New filament" form (Filament page) can search [SpoolmanDB](https://github.com/Donkie/SpoolmanDB), a free, community-maintained database of filament products, to autofill brand, material, color, diameter, spool weight, and recommended extruder/bed temps instead of typing them by hand.
+
+This is the one feature that reaches out to the open internet rather than the local network, and it only does so when you ask it to: click "Sync now" in the New filament drawer to download the current dataset (a couple MB of JSON), which is then cached to `data/spoolmandb-cache.json` so every search after that is instant and offline. Nothing is fetched automatically or on a schedule, and the rest of the app works fine if this is never used.
 
 ## Project layout
 
@@ -64,6 +65,7 @@ server.js              # HTTP server entry point (static files + API)
 lib/
   db.js                 # JSON-file data store (generic CRUD + settings singleton)
   api.js                # REST routes, dashboard + reports aggregation
+  spoolmandb.js          # SpoolmanDB filament lookup (fetch, cache, search)
   printers/
     octoprint.js          # OctoPrint REST adapter
     moonraker.js           # Moonraker (Klipper) REST adapter
@@ -102,6 +104,9 @@ Plus computed/singleton endpoints:
 | GET/PUT | `/api/settings` | Workspace settings (single object, not a list) |
 | GET | `/api/printers/status` | Live status for all printers |
 | GET | `/api/printers/:id/status` | Live status for one printer |
+| GET | `/api/spoolmandb/status` | Whether the SpoolmanDB filament dataset is cached, and when it was last synced |
+| POST | `/api/spoolmandb/refresh` | Download the current SpoolmanDB dataset and cache it |
+| GET | `/api/spoolmandb/search?q=` | Search the cached dataset by brand/material/color |
 
 ## Extending it ("vibe coding" this further)
 

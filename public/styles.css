@@ -1,6 +1,6 @@
-/* Design tokens lifted from FoxTrack's shipped stylesheet (shadcn/ui "new
-   york" style: neutral oklch palette + a warm orange brand accent). Kept as
-   plain CSS variables so the whole app can be restyled from one place. */
+/* Design tokens (shadcn/ui "new york" style: neutral oklch palette + a warm
+   orange brand accent). Kept as plain CSS variables so the whole app can be
+   restyled from one place. */
 
 :root {
   --background: oklch(100% 0 0);
@@ -146,15 +146,40 @@ a { color: inherit; }
   color: #fff;
   font-weight: 700;
   font-size: 13px;
+  overflow: hidden;
+  flex-shrink: 0;
 }
+.brand .mark img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Brand name can be a long white-labeled name (up to 30 chars) - let it
+   shrink/truncate rather than push the beta badge out of the sidebar. */
+#brand-name-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.beta-badge {
+  flex-shrink: 0;
+  margin-left: auto;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--status-amber-bg);
+  color: var(--status-amber-fg);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.beta-badge:hover { filter: brightness(0.95); }
 
 .nav-group-label {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--muted-foreground);
-  padding: 12px 10px 4px 10px;
+  padding: 6px 10px;
+  margin-top: 14px;
 }
+
+.nav-group-label:first-child { margin-top: 4px; }
 
 .nav-item {
   display: flex;
@@ -173,30 +198,6 @@ a { color: inherit; }
 .nav-item:hover { background: var(--sidebar-accent); }
 .nav-item.active { background: var(--sidebar-accent); font-weight: 600; }
 .nav-item.active svg { opacity: 1; }
-
-.sidebar-footer {
-  margin-top: auto;
-  padding: 10px;
-  border-top: 1px solid var(--sidebar-border);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12.5px;
-}
-
-.avatar {
-  width: 26px;
-  height: 26px;
-  border-radius: 999px;
-  background: var(--accent-brand);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 11px;
-  flex-shrink: 0;
-}
 
 .topbar {
   height: 52px;
@@ -224,6 +225,7 @@ a { color: inherit; }
 }
 
 .icon-btn {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -238,7 +240,32 @@ a { color: inherit; }
 }
 
 .icon-btn:hover { background: var(--muted); color: var(--foreground); }
-.icon-btn svg { width: 16px; height: 16px; }
+/* display:block matters for the bell button specifically: its icon sits in
+   a wrapper span (alongside the notif-badge dot) instead of being the
+   button's direct child like every other icon-btn, and an inline <svg>
+   picks up baseline spacing from that wrapper that throws its centering
+   off by a couple pixels. Block-level removes that inline spacing so it
+   lines up with the rest of the topbar icons. */
+.icon-btn svg { width: 16px; height: 16px; display: block; }
+
+.notif-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  border-radius: 999px;
+  background: oklch(57.7% 0.245 27.325);
+  color: #fff;
+  font-size: 9.5px;
+  font-weight: 700;
+  line-height: 15px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px var(--card, #fff);
+}
 
 .main-scroll {
   flex: 1;
@@ -250,7 +277,6 @@ a { color: inherit; }
 .main {
   flex: 1;
   padding: 24px 28px 60px 28px;
-  max-width: 1280px;
   width: 100%;
 }
 
@@ -318,6 +344,8 @@ a { color: inherit; }
   font-family: inherit;
 }
 .btn:hover { opacity: 0.88; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn:disabled:hover { opacity: 0.45; }
 .btn.secondary { background: var(--secondary); color: var(--secondary-foreground); border-color: var(--border); }
 .btn.outline { background: transparent; color: var(--foreground); border-color: var(--border); }
 .btn.ghost { background: transparent; color: var(--foreground); }
@@ -352,10 +380,10 @@ tbody tr:hover { background: var(--muted); }
   font-weight: 600;
   white-space: nowrap;
 }
-.badge.gray, .badge.pending, .badge.draft, .badge.not_operational, .badge.not_tracked { background: var(--status-gray-bg); color: var(--status-gray-fg); }
+.badge.gray, .badge.pending, .badge.draft, .badge.not_operational, .badge.not_tracked, .badge.archived { background: var(--status-gray-bg); color: var(--status-gray-fg); }
 .badge.blue, .badge.post_processing, .badge.outstanding { background: var(--status-blue-bg); color: var(--status-blue-fg); }
-.badge.amber, .badge.printing, .badge.due_soon { background: var(--status-amber-bg); color: var(--status-amber-fg); }
-.badge.green, .badge.fulfilled, .badge.accepted, .badge.paid, .badge.completed, .badge.operational, .badge.online, .badge.on_schedule { background: var(--status-green-bg); color: var(--status-green-fg); }
+.badge.amber, .badge.printing, .badge.due_soon, .badge.new { background: var(--status-amber-bg); color: var(--status-amber-fg); }
+.badge.green, .badge.fulfilled, .badge.accepted, .badge.paid, .badge.completed, .badge.operational, .badge.online, .badge.on_schedule, .badge.converted { background: var(--status-green-bg); color: var(--status-green-fg); }
 .badge.red, .badge.cancelled, .badge.rejected, .badge.overdue, .badge.failed, .badge.offline { background: var(--status-red-bg); color: var(--status-red-fg); }
 .badge.purple { background: var(--status-purple-bg); color: var(--status-purple-fg); }
 
@@ -374,6 +402,26 @@ tbody tr:hover { background: var(--muted); }
 .tab:hover { color: var(--foreground); }
 .tab.active { color: var(--foreground); border-bottom-color: var(--accent-brand); }
 
+/* ---------- Segmented tab bar (e.g. Product's Details/Pricing/Stock/BOM) ----------
+   A gray track with a raised white "active" tab, distinct from the
+   underline-style .tabs above - used where the tabs sit inside a modal
+   rather than atop a full page. */
+.segmented-tabs {
+  display: flex; gap: 2px; background: var(--muted); border-radius: 8px;
+  padding: 3px; margin-bottom: 18px;
+}
+.segmented-tab {
+  flex: 1; text-align: center; padding: 7px 10px; border-radius: 6px;
+  font-size: 12.5px; font-weight: 600; color: var(--muted-foreground);
+  cursor: pointer; border: none; background: transparent; font-family: inherit;
+}
+.segmented-tab.active {
+  background: var(--card); color: var(--foreground);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border);
+}
+.segmented-tab.disabled { cursor: not-allowed; opacity: 0.5; }
+.segmented-tab.disabled:hover { color: var(--muted-foreground); }
+
 .pill-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
 .pill-tab {
   padding: 6px 12px;
@@ -390,12 +438,18 @@ tbody tr:hover { background: var(--muted); }
 
 /* ---------- Settings layout ---------- */
 
-.settings-layout { display: flex; gap: 28px; align-items: flex-start; }
-.settings-nav { width: 190px; flex-shrink: 0; display: flex; flex-direction: column; gap: 2px; }
-.settings-nav-label { font-size: 11px; text-transform: uppercase; color: var(--muted-foreground); padding: 10px 8px 4px 8px; }
-.settings-nav-item { padding: 6px 8px; border-radius: 6px; font-size: 13px; cursor: pointer; color: var(--muted-foreground); }
+.settings-layout { display: flex; gap: 36px; align-items: flex-start; }
+.settings-nav { width: 200px; flex-shrink: 0; display: flex; flex-direction: column; gap: 4px; }
+.settings-nav-label { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted-foreground); padding: 0 10px; margin: 28px 0 10px 0; }
+.settings-nav-label:first-child { margin-top: 4px; }
+.settings-nav-item { padding: 10px 10px; border-radius: 6px; font-size: 14px; cursor: pointer; color: var(--muted-foreground); }
 .settings-nav-item:hover { background: var(--muted); color: var(--foreground); }
 .settings-nav-item.active { background: var(--muted); color: var(--foreground); font-weight: 600; }
+/* Not-yet-implemented tabs (stubbed SaaS-only sections) - flagged red so
+   it's obvious at a glance which nav items are placeholders. */
+.settings-nav-item-stub { color: var(--status-red-fg); }
+.settings-nav-item-stub:hover { color: var(--status-red-fg); }
+.settings-nav-item-stub.active { color: var(--status-red-fg); }
 .settings-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
 
 /* ---------- Forms ---------- */
@@ -413,6 +467,10 @@ tbody tr:hover { background: var(--muted); }
   font-family: inherit;
 }
 .field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--ring); outline-offset: 0; }
+/* Every notes/description textarea in the app is drag-resizable from the
+   bottom-right corner (vertical only, so it can't be dragged wider than its
+   fixed-width container and break the form layout). */
+.field textarea { resize: vertical; min-height: 70px; }
 .field-hint { font-size: 11.5px; color: var(--muted-foreground); margin-top: 4px; }
 .field-row { display: flex; gap: 12px; }
 .field-row .field { flex: 1; }
@@ -461,21 +519,77 @@ tbody tr:hover { background: var(--muted); }
 
 .row-actions { display: flex; gap: 6px; }
 
-/* ---------- Modal ---------- */
+/* ---------- Modal: slides in as a right-side drawer ---------- */
+
+:root { --wide-modal-width: 920px; }
+
+@keyframes modal-slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+@keyframes modal-slide-out-right {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+@keyframes modal-backdrop-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes modal-backdrop-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+/* Clicking the backdrop no longer closes the drawer (too easy to lose
+   in-progress work by missing it) - this nudge just confirms the click
+   landed, and that Cancel/X is the way out. */
+@keyframes modal-nudge {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+.modal.nudge { animation: modal-nudge 0.28s ease-in-out; }
+
+/* Paired with the nudge above: flashes the X button and/or Cancel button so
+   the hint points at exactly how to close the drawer, not just "something
+   happened". */
+@keyframes attn-flash {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; background: transparent; }
+  30% {
+    box-shadow: 0 0 0 4px color-mix(in oklch, var(--accent-brand) 35%, transparent);
+    background: color-mix(in oklch, var(--accent-brand) 14%, transparent);
+    color: var(--accent-brand);
+  }
+}
+.attn-flash { animation: attn-flash 0.6s ease-out; border-radius: 6px; }
 
 .modal-backdrop {
   position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-  display: flex; align-items: center; justify-content: center; z-index: 50;
-  padding: 24px;
+  display: flex; align-items: stretch; justify-content: flex-end; z-index: 50;
+  animation: modal-backdrop-fade-in 0.15s ease-out;
 }
+.modal-backdrop.closing { animation: modal-backdrop-fade-out 0.18s ease-in forwards; pointer-events: none; }
 .modal {
   background: var(--card); color: var(--card-foreground);
-  border: 1px solid var(--border); border-radius: var(--radius);
-  width: 560px; max-width: 100%; max-height: 90vh;
+  border-left: 1px solid var(--border); border-radius: 0;
+  width: 560px; max-width: 100%; height: 100vh; max-height: 100vh;
   display: flex; flex-direction: column;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+  box-shadow: -12px 0 40px rgba(0,0,0,0.25);
+  animation: modal-slide-in-right 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.modal.modal-wide { width: 920px; }
+.modal.closing { animation: modal-slide-out-right 0.18s cubic-bezier(0.4, 0, 1, 1) forwards; }
+.modal.modal-wide { width: var(--wide-modal-width); }
+
+/* A second modal opened from within a modal already open (e.g. "Add new
+   customer" from inside the New Quote drawer). It slides in from the same
+   right edge but docks immediately to the left of a wide primary drawer
+   (via the backdrop's padding-right) instead of covering it, so both stay
+   fully visible side by side. Transparent backdrop keeps the first drawer
+   from being dimmed. */
+.modal-backdrop.modal-backdrop-secondary { background: transparent; z-index: 60; padding-right: var(--wide-modal-width); }
+.modal.modal-secondary { width: 420px; box-shadow: -12px 0 40px rgba(0,0,0,0.35); border-left: 1px solid var(--border); }
+@media (max-width: 1400px) {
+  .modal-backdrop.modal-backdrop-secondary { padding-right: 0; }
+}
 
 .modal-header {
   display: flex; align-items: flex-start; justify-content: space-between;
@@ -533,7 +647,8 @@ input[type="range"].range-slider {
 .qline-row:last-child { margin-bottom: 0; }
 .qline-row > div { flex: 1; }
 .qline label.mini { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted-foreground); margin-bottom: 4px; }
-.qline input, .qline select { width: 100%; background: var(--background); border: 1px solid var(--border); color: var(--foreground); border-radius: 6px; padding: 6px 8px; font-size: 12.5px; font-family: inherit; }
+.qline input, .qline select, .qline textarea { width: 100%; background: var(--background); border: 1px solid var(--border); color: var(--foreground); border-radius: 6px; padding: 6px 8px; font-size: 12.5px; font-family: inherit; }
+.qline textarea { resize: vertical; }
 .qline-desc-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
 .qline-desc-row input { flex: 1; }
 .qline-remove { background: transparent; border: 1px solid var(--border); border-radius: 6px; padding: 6px; cursor: pointer; color: var(--muted-foreground); flex-shrink: 0; }
@@ -563,3 +678,206 @@ input[type="range"].range-slider {
   font-size: 13px; z-index: 100; box-shadow: 0 4px 14px rgba(0,0,0,0.12);
 }
 .theme-toggle { margin-left: auto; }
+
+/* ---------- Hover tooltips (topbar icons, etc.) ---------- */
+
+[data-tooltip] { position: relative; }
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute; top: calc(100% + 8px); right: 0; z-index: 200;
+  background: var(--foreground); color: var(--background);
+  font-size: 11px; font-weight: 500; padding: 4px 8px; border-radius: 5px; white-space: nowrap;
+  opacity: 0; transform: translateY(-2px); pointer-events: none;
+  transition: opacity 0.1s ease, transform 0.1s ease;
+}
+[data-tooltip]:hover::after { opacity: 1; transform: translateY(0); }
+
+/* ---------- Density (Settings > Appearance) ---------- */
+
+body.density-compact .card { padding: 11px; }
+body.density-compact th { padding: 6px 8px; }
+body.density-compact td { padding: 7px 8px; font-size: 12.5px; }
+body.density-compact .field { margin-bottom: 8px; }
+body.density-compact .nav-item { padding: 4px 10px; }
+body.density-compact .settings-nav-item { padding: 6px 10px; }
+body.density-compact .settings-nav-label { margin: 18px 0 6px 0; }
+body.density-compact .page-header { margin-bottom: 14px; }
+body.density-compact .grid { gap: 10px; }
+body.density-compact .section-header { margin: 18px 0 8px 0; }
+
+/* ---------- Color picker (Filament color, Settings accent color: swatch + RGB/hex popover) ---------- */
+
+label.mini { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted-foreground); margin-bottom: 4px; }
+
+.color-picker-inline { position: relative; display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+/* Native <input type="color"> - a real OS/browser color picker on click.
+   Styled to look like the same swatch button the custom popover used to
+   be, since browsers render it very plainly by default. */
+.color-native-swatch {
+  width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border);
+  cursor: pointer; padding: 0; background: none; flex-shrink: 0;
+}
+.color-native-swatch::-webkit-color-swatch-wrapper { padding: 2px; }
+.color-native-swatch::-webkit-color-swatch { border: none; border-radius: 6px; }
+.color-native-swatch::-moz-color-swatch { border: none; border-radius: 6px; }
+.color-hex-input { width: 90px; flex-shrink: 0; }
+.color-picker-panel {
+  position: absolute; top: calc(100% + 6px); right: 0; z-index: 20;
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px; width: 200px; box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+.color-picker-panel .field { margin-bottom: 0; }
+.color-rgb-row { display: flex; gap: 6px; }
+.color-rgb-row > div { flex: 1; }
+.color-rgb-row input { width: 100%; }
+
+/* ---------- Brand (white labeling) ---------- */
+
+.brand-icon-preview {
+  width: 40px; height: 40px; border-radius: 8px; background: var(--accent-brand);
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  font-weight: 700; font-size: 13px; overflow: hidden; flex-shrink: 0;
+}
+.brand-icon-preview img { width: 100%; height: 100%; object-fit: cover; }
+.disabled-link { opacity: 0.4; pointer-events: none; }
+
+/* Collapsible settings sections (native <details>/<summary>, styled to
+   match .card so they don't need any extra JS). */
+details.card { padding: 0; overflow: hidden; }
+details.card > summary {
+  padding: 16px 18px; font-weight: 600; cursor: pointer; list-style: none;
+  display: flex; align-items: center; justify-content: space-between;
+}
+details.card > summary::-webkit-details-marker { display: none; }
+details.card > summary::after {
+  content: ''; width: 8px; height: 8px; border-right: 1.5px solid var(--muted-foreground); border-bottom: 1.5px solid var(--muted-foreground);
+  transform: rotate(-45deg); transition: transform 0.15s ease; margin-left: 8px;
+}
+details.card[open] > summary::after { transform: rotate(45deg); }
+details.card > summary:hover { background: var(--muted); }
+details.card > .details-body { padding: 4px 18px 18px 18px; }
+
+/* ---------- Quote line items: no spinner arrows ---------- */
+
+.qline input[type="number"] { -moz-appearance: textfield; }
+.qline input[type="number"]::-webkit-inner-spin-button,
+.qline input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.qline input[data-field="grams"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--muted);
+}
+.qline-add-inventory-btn {
+  display: flex; align-items: center; gap: 6px; width: fit-content;
+  background: transparent; border: 1px dashed var(--border); color: var(--muted-foreground);
+  border-radius: 6px; padding: 5px 10px; font-size: 11.5px; font-weight: 500; cursor: pointer; margin-bottom: 8px;
+}
+.qline-add-inventory-btn:hover { color: var(--foreground); border-color: var(--muted-foreground); }
+.qline-inventory-row { align-items: flex-end; }
+.qline-inventory-row .qline-remove { align-self: center; margin-bottom: 1px; }
+
+/* ---------- Date inputs with an explicit calendar affordance ----------
+   Native <input type=date> picker indicators render as a dark icon in
+   most browsers, which disappears against this app's dark theme with no
+   color-scheme hint set. We hide the native indicator entirely and supply
+   our own always-visible calendar button (calling showPicker()) instead -
+   otherwise the two render on top of each other. */
+
+.date-input-wrap { position: relative; }
+.date-input-wrap input[type="date"] { padding-right: 34px; color-scheme: light dark; }
+.date-input-wrap input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+.date-input-wrap .date-picker-btn {
+  position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+  width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none; border-radius: 5px; cursor: pointer; color: var(--accent-brand);
+}
+.date-input-wrap .date-picker-btn:hover { background: var(--muted); color: var(--accent-brand); }
+
+/* ---------- Searchable combobox (e.g. quote customer picker) ---------- */
+
+.combobox { position: relative; }
+.combobox-input { width: 100%; }
+.combobox-panel {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 20;
+  background: var(--popover); border: 1px solid var(--border); border-radius: calc(var(--radius) - 2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18); max-height: 220px; overflow-y: auto; padding: 4px;
+}
+.combobox-option { padding: 7px 9px; font-size: 13px; border-radius: 5px; cursor: pointer; }
+.combobox-option:hover { background: var(--muted); }
+.combobox-option.active { background: var(--accent-brand); color: #fff; font-weight: 600; }
+.combobox-option.muted { color: var(--muted-foreground); }
+.combobox-option-none {
+  display: flex; align-items: center; gap: 6px;
+  color: var(--muted-foreground); font-style: italic;
+  border-bottom: 1px solid var(--border); margin-bottom: 4px; padding-bottom: 9px;
+}
+.combobox-option-none.active { color: var(--accent-brand); font-style: normal; font-weight: 600; background: transparent; }
+.combobox-option-none:hover { background: var(--muted); }
+.combobox-add { border-top: 1px solid var(--border); margin-top: 4px; padding-top: 6px; }
+.combobox-add-btn { display: flex; align-items: center; gap: 6px; padding: 7px 9px; font-size: 13px; border-radius: 5px; cursor: pointer; color: var(--accent-brand); font-weight: 600; }
+.combobox-add-btn:hover { background: var(--muted); }
+.combobox-inline-form { padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+.combobox-inline-form input {
+  background: var(--background); border: 1px solid var(--border); color: var(--foreground);
+  border-radius: 6px; padding: 6px 8px; font-size: 12.5px; font-family: inherit;
+}
+.combobox-inline-form-actions { display: flex; gap: 6px; margin-top: 2px; }
+
+/* ---------- Quotes list toolbar: search + status filters + sorting ---------- */
+
+.quotes-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.quotes-search { position: relative; flex: 1; min-width: 200px; max-width: 320px; }
+.quotes-search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted-foreground); pointer-events: none; }
+.quotes-search input {
+  width: 100%; background: var(--background); border: 1px solid var(--border); color: var(--foreground);
+  border-radius: calc(var(--radius) - 2px); padding: 8px 10px 8px 32px; font-size: 13px; font-family: inherit;
+}
+.quotes-search input:focus { outline: 2px solid var(--ring); outline-offset: 0; }
+.status-filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
+.status-filter-btn {
+  border: 1px solid var(--border); background: var(--card); color: var(--muted-foreground);
+  padding: 6px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 500; cursor: pointer;
+}
+.status-filter-btn:hover { color: var(--foreground); }
+.status-filter-btn.active { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+
+/* Filter button text is tinted to match the status badge ("bubble") it
+   filters for, and the active/selected state looks like an enlarged
+   version of that same badge instead of a generic dark pill. */
+.status-filter-btn[data-status-filter="draft"],
+.status-filter-btn[data-status-filter="pending"],
+.status-filter-btn[data-status-filter="archived"] { color: var(--status-gray-fg); }
+.status-filter-btn[data-status-filter="printing"],
+.status-filter-btn[data-status-filter="new"] { color: var(--status-amber-fg); }
+.status-filter-btn[data-status-filter="post_processing"] { color: var(--status-blue-fg); }
+.status-filter-btn[data-status-filter="accepted"],
+.status-filter-btn[data-status-filter="fulfilled"],
+.status-filter-btn[data-status-filter="converted"] { color: var(--status-green-fg); }
+.status-filter-btn[data-status-filter="rejected"],
+.status-filter-btn[data-status-filter="cancelled"] { color: var(--status-red-fg); }
+
+.status-filter-btn.active[data-status-filter="draft"],
+.status-filter-btn.active[data-status-filter="pending"],
+.status-filter-btn.active[data-status-filter="archived"] { background: var(--status-gray-bg); color: var(--status-gray-fg); border-color: var(--status-gray-fg); }
+.status-filter-btn.active[data-status-filter="printing"],
+.status-filter-btn.active[data-status-filter="new"] { background: var(--status-amber-bg); color: var(--status-amber-fg); border-color: var(--status-amber-fg); }
+.status-filter-btn.active[data-status-filter="post_processing"] { background: var(--status-blue-bg); color: var(--status-blue-fg); border-color: var(--status-blue-fg); }
+.status-filter-btn.active[data-status-filter="accepted"],
+.status-filter-btn.active[data-status-filter="fulfilled"],
+.status-filter-btn.active[data-status-filter="converted"] { background: var(--status-green-bg); color: var(--status-green-fg); border-color: var(--status-green-fg); }
+.status-filter-btn.active[data-status-filter="rejected"],
+.status-filter-btn.active[data-status-filter="cancelled"] { background: var(--status-red-bg); color: var(--status-red-fg); border-color: var(--status-red-fg); }
+
+th.sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+th.sortable:hover { color: var(--foreground); }
+th.sortable .sort-arrow { margin-left: 4px; font-size: 10px; opacity: 0.6; }
+th.sortable.sort-active .sort-arrow { opacity: 1; }
+
+.clickable-row { cursor: pointer; }
+.clickable-row:hover { background: var(--muted); }

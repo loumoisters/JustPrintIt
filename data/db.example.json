@@ -428,12 +428,12 @@
       "id": "83794d9a-806e-49fc-a269-a4df558a9253",
       "name": "Snapmaker U1",
       "model": "Snapmaker U1",
-      "type": "octoprint",
-      "host": "http://octopi.local",
-      "apiKey": "CHANGE_ME",
+      "type": "mock",
+      "host": "",
+      "apiKey": "",
       "powerDrawWatts": 180,
       "printHours": 28,
-      "notes": "Example real OctoPrint connection - update host/apiKey to connect for real.",
+      "notes": "Demo printer - no hardware needed. To connect a real OctoPrint/Moonraker box, edit this printer's type ('octoprint' or 'moonraker'), host, and apiKey directly in data/db.json - see lib/printers/.",
       "createdAt": "2026-07-01T04:00:00.000Z"
     }
   ],
@@ -595,67 +595,89 @@
       "name": "Cable Clip (5-pack)",
       "sku": "CC-005",
       "price": 12,
-      "stock": 84,
       "calculatedCost": 3.1,
       "variants": [
         {
           "name": "Black",
-          "sku": "CC-005-BLK"
+          "sku": "CC-005-BLK",
+          "quantity": 84,
+          "priceOverride": "",
+          "lowStockThreshold": ""
         },
         {
           "name": "White",
-          "sku": "CC-005-WHT"
+          "sku": "CC-005-WHT",
+          "quantity": 0,
+          "priceOverride": "",
+          "lowStockThreshold": ""
         }
       ],
       "notes": "0.2mm layer, 15% infill.",
-      "createdAt": "2026-02-02T05:00:00.000Z"
+      "createdAt": "2026-02-02T05:00:00.000Z",
+      "fulfillmentMode": "made_to_order",
+      "description": ""
     },
     {
       "id": "d22ccd2c-a71d-4d62-887d-1d50bcb6ae0d",
       "name": "Articulated Dragon",
       "sku": "ART-DRG",
       "price": 38,
-      "stock": 12,
       "calculatedCost": 9.4,
       "variants": [
         {
-          "name": "Silk Gold"
+          "name": "Silk Gold",
+          "quantity": 12,
+          "priceOverride": "",
+          "lowStockThreshold": ""
         },
         {
-          "name": "Silk Copper"
+          "name": "Silk Copper",
+          "quantity": 0,
+          "priceOverride": "",
+          "lowStockThreshold": ""
         }
       ],
       "notes": "Print-in-place, PLA silk recommended.",
-      "createdAt": "2026-03-10T04:00:00.000Z"
+      "createdAt": "2026-03-10T04:00:00.000Z",
+      "fulfillmentMode": "made_to_order",
+      "description": ""
     },
     {
       "id": "a142abd0-fe59-4721-9da9-20f5e7987c93",
       "name": "Camera Mount Bracket",
       "sku": "CAM-MNT",
       "price": 22.5,
-      "stock": 30,
       "calculatedCost": 6.8,
       "variants": [],
       "notes": "PETG for outdoor durability.",
-      "createdAt": "2026-04-05T04:00:00.000Z"
+      "createdAt": "2026-04-05T04:00:00.000Z",
+      "fulfillmentMode": "made_to_order",
+      "description": ""
     },
     {
       "id": "38139c27-2954-4d85-bcf3-a6725c0ab361",
       "name": "Desk Organizer Tray",
       "sku": "DSK-TRAY",
       "price": 27,
-      "stock": 18,
       "calculatedCost": 8.2,
       "variants": [
         {
-          "name": "Small"
+          "name": "Small",
+          "quantity": 18,
+          "priceOverride": "",
+          "lowStockThreshold": ""
         },
         {
-          "name": "Large"
+          "name": "Large",
+          "quantity": 0,
+          "priceOverride": "",
+          "lowStockThreshold": ""
         }
       ],
       "notes": "",
-      "createdAt": "2026-06-15T04:00:00.000Z"
+      "createdAt": "2026-06-15T04:00:00.000Z",
+      "fulfillmentMode": "made_to_order",
+      "description": ""
     }
   ],
   "inventoryItems": [

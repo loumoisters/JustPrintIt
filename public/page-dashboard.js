@@ -29,8 +29,15 @@ function donutChartSvg(segments, opts = {}) {
   const circumference = 2 * Math.PI * r;
   const total = segments.reduce((sum, seg) => sum + seg.value, 0);
 
+  // A slightly-wider dark ring drawn first, behind everything, so a light
+  // or white segment still reads as a filled slice against a white card
+  // instead of looking like a missing chunk - plus a soft drop-shadow on
+  // the whole chart so it lifts off the page rather than sitting flush.
+  const outline = `<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="rgba(0,0,0,0.14)" stroke-width="${stroke + 2}"/>`;
+  const svgOpen = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="filter: drop-shadow(0 1px 3px rgba(0,0,0,0.18));">`;
+
   const bg = `<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="var(--muted)" stroke-width="${stroke}"/>`;
-  if (total <= 0) return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${bg}</svg>`;
+  if (total <= 0) return `${svgOpen}${outline}${bg}</svg>`;
 
   let offset = 0;
   const arcs = segments.filter((s) => s.value > 0).map((seg) => {
@@ -40,7 +47,7 @@ function donutChartSvg(segments, opts = {}) {
     return circle;
   }).join('');
 
-  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${bg}${arcs}</svg>`;
+  return `${svgOpen}${outline}${bg}${arcs}</svg>`;
 }
 
 function weekStripHtml() {
@@ -118,13 +125,19 @@ function onboardingChecklistHtml() {
 async function renderDashboard(navEpochAtStart = navEpoch) {
   if (onboardingDismissed === null) onboardingDismissed = localStorage.getItem('jpi-onboarding-dismissed') === 'true';
 
-  await refreshStatuses();
+  // These three used to be sequential awaits (refreshStatuses, then
+  // dashboard, then reports) - three round trips back to back. Running them
+  // together cuts load time roughly to whichever one is slowest instead of
+  // the sum of all three, which matters most when a real printer adapter
+  // (OctoPrint/Moonraker) is slow or unreachable and hits its 5s timeout.
+  const [, d, reportsData] = await Promise.all([
+    refreshStatuses(),
+    api('GET', '/api/dashboard'),
+    api('GET', '/api/reports?months=6').catch(() => null),
+  ]);
   if (!isCurrentNav(navEpochAtStart)) return; // user already navigated elsewhere
 
   const main = document.getElementById('main');
-  const d = await api('GET', '/api/dashboard');
-  const reportsData = await api('GET', '/api/reports?months=6').catch(() => null);
-  if (!isCurrentNav(navEpochAtStart)) return;
 
   const profitByMonth = reportsData
     ? reportsData.revenueByMonth.map((r, i) => ({ label: r.label, value: r.value - reportsData.expensesByMonth[i].value }))
@@ -132,7 +145,7 @@ async function renderDashboard(navEpochAtStart = navEpoch) {
 
   // The ring itself only represents active (non-terminal) orders; the
   // legend below it shows the full breakdown including fulfilled/cancelled
-  // for context, matching FoxTrack's layout.
+  // for context.
   const ringSegments = ORDER_STATUSES.filter((s) => s !== 'fulfilled' && s !== 'cancelled').map((s) => ({
     status: s, value: d.ordersByStatus[s] || 0, color: ORDER_STATUS_DOT[s],
   }));
@@ -218,11 +231,19 @@ async function renderDashboard(navEpochAtStart = navEpoch) {
     ` : ''}
   `;
 
-  renderKanbanBoard('dash-kanban', state.orders);
+  renderKanbanBoard('dash-kanban', state.orders.filter((o) => !o.archived));
 
-  document.getElementById('btn-new-order').onclick = () => navigate('orders').then(() => document.getElementById('add-order')?.click());
-  document.getElementById('btn-new-quote').onclick = () => navigate('quotes').then(() => document.getElementById('add-quote')?.click());
-  document.getElementById('btn-new-expense').onclick = () => navigate('expenses').then(() => document.getElementById('add-expense')?.click());
+  // Opens the same modal each page's own "+ New ..." button opens, but
+  // directly - without navigating to that page first - so if the user
+  // closes the modal without saving, they're still on the Dashboard
+  // instead of having been silently moved to Orders/Quotes/Expenses.
+  document.getElementById('btn-new-order').onclick = () => openModal('New Order', orderFormFields(), async (data) => {
+    await api('POST', '/api/orders', data);
+    showToast('Order created');
+    await refreshAndRerender();
+  });
+  document.getElementById('btn-new-quote').onclick = () => openQuoteModal();
+  document.getElementById('btn-new-expense').onclick = () => openExpenseModal();
 
   const prevBtn = document.getElementById('week-prev');
   const nextBtn = document.getElementById('week-next');

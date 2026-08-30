@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Request a quote</title>
+<link rel="icon" type="image/svg+xml" id="favicon-link" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23c05a2b'/%3E%3Ctext x='16' y='22' font-family='Arial, Helvetica, sans-serif' font-size='15' font-weight='700' fill='%23ffffff' text-anchor='middle'%3EJP%3C/text%3E%3C/svg%3E" />
+<style>
+  /* Deliberately self-contained (no /styles.css, no other shared assets) -
+     this page has to stay reachable even when the rest of the app is
+     locked behind a password, so it doesn't depend on anything else the
+     server would otherwise need to allowlist. A trimmed copy of the app's
+     own design tokens keeps the look consistent anyway. */
+  :root {
+    --background: oklch(100% 0 0);
+    --foreground: oklch(14.5% 0 0);
+    --card: oklch(100% 0 0);
+    --muted: oklch(97% 0 0);
+    --muted-foreground: oklch(55.6% 0 0);
+    --accent-brand: oklch(70% 0.19 41);
+    --border: oklch(92.2% 0 0);
+    --radius: 0.6rem;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: oklch(14.5% 0 0);
+      --foreground: oklch(98.5% 0 0);
+      --card: oklch(18.5% 0 0);
+      --muted: oklch(25.5% 0 0);
+      --muted-foreground: oklch(70.8% 0 0);
+      --border: oklch(100% 0 0 / 0.12);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: var(--font-sans); background: var(--background); color: var(--foreground);
+    min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 48px 16px;
+  }
+  .wrap { width: 100%; max-width: 480px; }
+  .header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+  .mark { width: 34px; height: 34px; border-radius: 8px; background: var(--accent-brand); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; overflow: hidden; flex-shrink: 0; }
+  .mark img { width: 100%; height: 100%; object-fit: cover; }
+  .header h1 { font-size: 16px; font-weight: 700; margin: 0; }
+  h2 { font-size: 22px; font-weight: 700; margin: 0 0 4px 0; }
+  p.sub { color: var(--muted-foreground); font-size: 13.5px; margin: 0 0 24px 0; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 5px; font-weight: 500; }
+  .field input, .field textarea {
+    width: 100%; background: var(--background); border: 1px solid var(--border); color: var(--foreground);
+    border-radius: 6px; padding: 9px 10px; font-size: 14px; font-family: inherit;
+  }
+  .field textarea { resize: vertical; min-height: 90px; }
+  .field-row { display: flex; gap: 12px; }
+  .field-row .field { flex: 1; }
+  .field-hint { color: var(--muted-foreground); font-size: 11.5px; margin: -2px 0 8px 0; }
+  .date-wrap { position: relative; width: 180px; }
+  .date-wrap input[type="date"] { width: 100%; padding-right: 32px; }
+  /* The browser's own calendar icon stays functional but invisible, stretched
+     over the same spot as our visible icon below - so clicking the icon you
+     can actually see still opens the native date picker. Without this, the
+     real (clickable) indicator and our decorative one just sit on top of
+     each other and only one is ever visibly correct. */
+  .date-wrap input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute; right: 0; top: 0; width: 32px; height: 100%; margin: 0;
+    opacity: 0; cursor: pointer;
+  }
+  .date-wrap svg { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; pointer-events: none; color: var(--muted-foreground); }
+  .repeat-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .repeat-row input[type="text"], .repeat-row input[type="url"] { flex: 1; }
+  .color-entry {
+    border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 8px; background: var(--background);
+  }
+  .color-entry-row1 { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .color-entry-row2 { display: flex; gap: 8px; }
+  .color-entry-row2 input { flex: 1; }
+  .color-swatch-preview {
+    width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--border); flex-shrink: 0;
+    background:
+      linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 8px 8px; background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+  }
+  .color-select { flex: 1; background: var(--background); border: 1px solid var(--border); color: var(--foreground); border-radius: 6px; padding: 9px 10px; font-size: 14px; font-family: inherit; }
+  .row-remove {
+    flex-shrink: 0; width: 30px; height: 36px; display: flex; align-items: center; justify-content: center;
+    background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--muted-foreground);
+    cursor: pointer; font-size: 16px; line-height: 1; font-family: inherit;
+  }
+  .row-remove:hover { background: var(--muted); color: var(--foreground); }
+  .add-row-btn {
+    display: inline-flex; align-items: center; gap: 5px; background: transparent; border: 1px dashed var(--border);
+    color: var(--muted-foreground); border-radius: 6px; padding: 7px 12px; font-size: 12.5px; font-weight: 500;
+    cursor: pointer; font-family: inherit; margin-top: 2px;
+  }
+  .add-row-btn:hover { background: var(--muted); color: var(--foreground); }
+  /* Honeypot - hidden from real visitors, visible to naive bots that fill
+     in every field they can find in the markup. */
+  .hp { position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;
+    background: var(--accent-brand); color: #fff; border: none; border-radius: 7px;
+    padding: 11px 16px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+  .error { color: oklch(57.7% 0.245 27.325); font-size: 12.5px; margin-top: 10px; display: none; }
+  .success { display: none; text-align: center; padding: 20px 4px; }
+  .success .check { width: 44px; height: 44px; border-radius: 999px; background: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto; }
+  .success h3 { margin: 0 0 6px 0; font-size: 16px; }
+  .success p { color: var(--muted-foreground); font-size: 13.5px; margin: 0; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <span class="mark" id="brand-mark">JP</span>
+      <h1 id="brand-name-text">JustPrintIt</h1>
+    </div>
+    <h2>Request a quote</h2>
+    <p class="sub" id="page-sub">Tell us about your project and we'll follow up with pricing.</p>
+
+    <div class="card">
+      <form id="request-form">
+        <div class="field">
+          <label for="f-name">Name *</label>
+          <input type="text" id="f-name" name="name" required autocomplete="name"/>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-email">Email *</label>
+            <input type="email" id="f-email" name="email" required autocomplete="email"/>
+          </div>
+          <div class="field">
+            <label for="f-phone">Phone</label>
+            <input type="tel" id="f-phone" name="phone" autocomplete="tel"/>
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-description">Tell us about your project (optional)</label>
+          <textarea id="f-description" name="description" placeholder="What do you need printed? Quantity, material, size, deadline - anything that helps us quote it accurately."></textarea>
+        </div>
+
+        <div class="field">
+          <label>Colors *</label>
+          <div class="field-hint" style="margin-top:-3px;">Pick at least one color - "No color preference" doesn't count.</div>
+          <div id="colors-list"></div>
+          <button type="button" class="add-row-btn" id="add-color-btn">+ Add another color</button>
+        </div>
+
+        <div class="field">
+          <label>Links to your model (optional)</label>
+          <div id="links-list"></div>
+          <button type="button" class="add-row-btn" id="add-link-btn">+ Add another link</button>
+        </div>
+
+        <div class="field">
+          <label for="f-specialRequests">Special requests (optional)</label>
+          <textarea id="f-specialRequests" name="specialRequests" placeholder="Packaging, rush turnaround, anything else we should know."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="f-deadline">Needed by (optional)</label>
+          <div class="date-wrap">
+            <input type="date" id="f-deadline" name="deadline"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          </div>
+        </div>
+
+        <div class="field hp" aria-hidden="true">
+          <label for="f-website">Company website</label>
+          <input type="text" id="f-website" name="website" tabindex="-1" autocomplete="off"/>
+        </div>
+        <button type="submit" class="btn" id="submit-btn">Send request</button>
+        <div class="error" id="error-msg"></div>
+      </form>
+      <div class="success" id="success-view">
+        <div class="check">✓</div>
+        <h3>Request sent</h3>
+        <p>Thanks — we've got your project details and will follow up soon.</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+(async function () {
+  try {
+    const res = await fetch('/api/public/branding');
+    if (res.ok) {
+      const b = await res.json();
+      const nameEl = document.getElementById('brand-name-text');
+      const markEl = document.getElementById('brand-mark');
+      const subEl = document.getElementById('page-sub');
+      if (b.brandName) nameEl.textContent = b.brandName;
+      if (b.brandIconUrl) markEl.innerHTML = '<img src="' + b.brandIconUrl + '" alt=""/>';
+      else if (b.brandName) markEl.textContent = b.brandName.trim().slice(0, 2).toUpperCase();
+      if (b.workspaceName) subEl.textContent = "Tell " + b.workspaceName + " about your project and they'll follow up with pricing.";
+
+      const faviconLink = document.getElementById('favicon-link');
+      if (faviconLink) {
+        if (b.brandIconUrl) {
+          faviconLink.href = b.brandIconUrl;
+        } else {
+          const initials = (b.brandName || 'JustPrintIt').trim().slice(0, 2).toUpperCase() || 'JP';
+          const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#c05a2b"/><text x="16" y="22" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">' + initials + '</text></svg>';
+          faviconLink.href = 'data:image/svg+xml,' + encodeURIComponent(svg);
+        }
+      }
+    }
+  } catch (err) {
+    // Branding is cosmetic only - the form still works fine without it.
+  }
+
+  const form = document.getElementById('request-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const errorMsg = document.getElementById('error-msg');
+
+  // ~30 popular filament/print colors. "No color preference" stays first so
+  // it's the default for anyone who doesn't care and just tabs past it.
+  const COLOR_OPTIONS = [
+    { name: 'No color preference', hex: '' },
+    { name: 'Black', hex: '#1a1a1a' },
+    { name: 'White', hex: '#f5f5f5' },
+    { name: 'Gray', hex: '#8a8a8a' },
+    { name: 'Silver', hex: '#c0c0c0' },
+    { name: 'Charcoal', hex: '#36454f' },
+    { name: 'Red', hex: '#d0312d' },
+    { name: 'Maroon', hex: '#800000' },
+    { name: 'Orange', hex: '#ff7f11' },
+    { name: 'Yellow', hex: '#ffd400' },
+    { name: 'Gold', hex: '#d4af37' },
+    { name: 'Lime Green', hex: '#8bc34a' },
+    { name: 'Green', hex: '#2e7d32' },
+    { name: 'Olive', hex: '#6b6b1f' },
+    { name: 'Teal', hex: '#00897b' },
+    { name: 'Turquoise', hex: '#40e0d0' },
+    { name: 'Cyan', hex: '#00bcd4' },
+    { name: 'Sky Blue', hex: '#63b8ff' },
+    { name: 'Blue', hex: '#1565c0' },
+    { name: 'Navy', hex: '#1a237e' },
+    { name: 'Purple', hex: '#7b1fa2' },
+    { name: 'Violet', hex: '#9b59b6' },
+    { name: 'Lavender', hex: '#b19cd9' },
+    { name: 'Magenta', hex: '#d81b8f' },
+    { name: 'Pink', hex: '#f48fb1' },
+    { name: 'Hot Pink', hex: '#ff69b4' },
+    { name: 'Coral', hex: '#ff7f66' },
+    { name: 'Brown', hex: '#6d4c33' },
+    { name: 'Tan', hex: '#d2b48c' },
+    { name: 'Beige', hex: '#e8dcc4' },
+    { name: 'Mint', hex: '#98ff98' },
+  ];
+
+  // ---- Repeatable colors / links rows ----
+  const MAX_ROWS = 10;
+  const colorsList = document.getElementById('colors-list');
+  const linksList = document.getElementById('links-list');
+
+  function addColorRow() {
+    if (colorsList.children.length >= MAX_ROWS) return;
+    const row = document.createElement('div');
+    row.className = 'color-entry';
+    const options = COLOR_OPTIONS.map((c) => '<option value="' + c.hex + '" data-name="' + c.name + '">' + c.name + '</option>').join('');
+    row.innerHTML =
+      '<div class="color-entry-row1">' +
+        '<span class="color-swatch-preview"></span>' +
+        '<select class="color-select">' + options + '</select>' +
+        '<button type="button" class="row-remove" aria-label="Remove color">&times;</button>' +
+      '</div>' +
+      '<div class="color-entry-row2">' +
+        '<input type="text" class="color-desc" placeholder="Describe the color (optional)"/>' +
+        '<input type="text" class="color-part" placeholder="What part of the print?"/>' +
+      '</div>';
+    const select = row.querySelector('.color-select');
+    const preview = row.querySelector('.color-swatch-preview');
+    const syncPreview = () => { preview.style.background = select.value || ''; };
+    select.addEventListener('change', syncPreview);
+    syncPreview();
+    row.querySelector('.row-remove').onclick = () => row.remove();
+    colorsList.appendChild(row);
+  }
+
+  function addLinkRow() {
+    if (linksList.children.length >= MAX_ROWS) return;
+    const row = document.createElement('div');
+    row.className = 'repeat-row link-row';
+    row.innerHTML =
+      '<input type="url" class="link-url" placeholder="https://..."/>' +
+      '<button type="button" class="row-remove" aria-label="Remove link">&times;</button>';
+    row.querySelector('.row-remove').onclick = () => row.remove();
+    linksList.appendChild(row);
+  }
+
+  document.getElementById('add-color-btn').onclick = addColorRow;
+  document.getElementById('add-link-btn').onclick = addLinkRow;
+  addColorRow();
+  addLinkRow();
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorMsg.style.display = 'none';
+
+    const colors = Array.from(colorsList.querySelectorAll('.color-entry'))
+      .map((row) => {
+        const select = row.querySelector('.color-select');
+        const selectedOption = select.options[select.selectedIndex];
+        return {
+          hex: select.value,
+          colorName: selectedOption ? selectedOption.dataset.name : '',
+          description: row.querySelector('.color-desc').value.trim(),
+          part: row.querySelector('.color-part').value.trim(),
+        };
+      })
+      .filter((c) => c.hex || c.description || c.part);
+
+    // At least one row has to be an actual chosen color, not left on "No
+    // color preference" (hex: '') - that option still exists for describing
+    // a *specific* row as colorless (e.g. a clear part among colored ones),
+    // it just can't be the only thing submitted.
+    if (!colors.some((c) => c.hex)) {
+      errorMsg.textContent = 'Please select at least one color.';
+      errorMsg.style.display = 'block';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+
+    const links = Array.from(linksList.querySelectorAll('.link-row'))
+      .map((row) => row.querySelector('.link-url').value.trim())
+      .filter(Boolean);
+
+    const data = Object.fromEntries(new FormData(form).entries());
+    data.colors = colors;
+    data.links = links;
+    try {
+      const res = await fetch('/api/public/quote-requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || 'Something went wrong. Please try again.');
+      }
+      form.style.display = 'none';
+      document.getElementById('success-view').style.display = 'block';
+    } catch (err) {
+      errorMsg.textContent = err.message;
+      errorMsg.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send request';
+    }
+  });
+})();
+</script>
+</body>
+</html>

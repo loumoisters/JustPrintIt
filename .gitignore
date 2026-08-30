@@ -7,3 +7,11 @@ node_modules/
 # to bootstrap a fresh install; data/db.json is your real, private data.
 data/db.json
 data/uploads/
+
+# Automatic snapshots taken before destructive ops (see backupDbFile() in
+# lib/db.js) - real data, never commit.
+data/backups/
+
+# Cached copy of the SpoolmanDB filament dataset (lib/spoolmandb.js) -
+# fetched on demand, not part of the app itself.
+data/spoolmandb-cache.json

@@ -90,7 +90,16 @@ It can read your files, make edits, and run commands (like `node -c` to check sy
 - After it makes changes you're happy with, commit and push them (`git add . && git commit -m "..." && git push`) so they're saved to GitHub and ready to redeploy.
 - Full docs if you want to go deeper: [code.claude.com/docs](https://code.claude.com/docs)
 
-## Part 4 — Deploy it online (Railway)
+## Part 4 — Deploy it
+
+Two good options depending on what you need:
+
+- **Option A: Railway** — a real public URL, reachable from anywhere on the internet. Costs a few dollars a month.
+- **Option B: Your own Mac** — runs permanently in the background on a Mac you own, reachable from your home network (your computer, phone, etc. on the same Wi-Fi). Free, and nothing leaves your house.
+
+Pick whichever matches what you actually need. You can also do both.
+
+### Option A: Railway (cloud, reachable from anywhere)
 
 This app stores its data in a plain file (`data/db.json`), not a database — which is great for simplicity, but means whatever host you pick needs to keep that file around between restarts ("persistent storage"). A lot of free hosting tiers wipe the filesystem on every redeploy, which would silently erase your orders/customers/etc. **Railway** is a good fit: simple GitHub-connected deploys, and it supports an attached persistent volume for exactly this case. It's not free forever (~$5/month in usage covers a small app like this comfortably), but it's the least fiddly option for something at this stage.
 
@@ -131,6 +140,41 @@ From here on, your workflow is: edit locally (or with Claude Code) → `git push
 
 Render.com has a free tier for Node apps, but free services **don't support persistent disks** and spin down after 15 minutes of inactivity (each new visit "wakes it up" with a few seconds' delay) — meaning your data would reset on every redeploy and possibly every restart. That's fine for kicking the tires publicly, but not for anything you want to actually rely on. If you go this route, treat it as a demo link, not where your real business data lives, until you're ready to move to Railway (or Fly.io, which also supports persistent volumes) for the real thing.
 
+### Option B: Your own Mac (home network, free)
+
+This runs the app permanently in the background on a Mac you own — it starts automatically when you log in, restarts itself if it ever crashes, and keeps running after you close Terminal or reboot. It's reachable from any device on the same Wi-Fi (your computer, phone, etc.), same as running `node server.js` manually, just without needing to keep a Terminal window open forever. There's no public URL - only devices on your home network can reach it, and no password is needed for that reason (add one anyway if you want the extra layer, see step 4).
+
+**1. Make sure Node.js is installed on the Mac.** Open Terminal and run `node -v` — if that fails, install it from [nodejs.org](https://nodejs.org) (or `brew install node` if you use Homebrew).
+
+**2. Clone the repo onto the Mac:**
+```bash
+git clone https://github.com/yourusername/print-fleet-manager.git
+cd print-fleet-manager
+```
+(Use your actual GitHub URL from Part 2 - if you're not sure, find it on your repo's GitHub page under the green **Code** button.)
+
+**3. Set it up as a background service:**
+```bash
+bash scripts/install-mac-service.sh
+```
+This script (already in the repo) generates a small macOS service definition, points it at this exact folder, and starts it - no manual file editing needed. It prints the app's URL and a quick health check when it's done. To use a port other than 3000: `PORT=8080 bash scripts/install-mac-service.sh`.
+
+**4. (Optional) Turn on the password lock.** Even on a home network, if other people share your Wi-Fi (roommates, guests) and you'd rather they not have access, set `APP_USERNAME`/`APP_PASSWORD` when running the install script instead of the plain version in step 3:
+```bash
+APP_USERNAME=admin APP_PASSWORD=yourpassword bash scripts/install-mac-service.sh
+```
+Re-run that command any time to change the password later - it's safe to run repeatedly, it just reloads the service with whatever settings you pass it.
+
+**5. Find the app on your network.** The service prints its URL when it starts, but if you need it again later, run `node server.js` once manually (Ctrl+C to stop it right after) - it prints both the `localhost` URL and the LAN URL to use from your phone/other devices, e.g. `http://192.168.1.23:3000`.
+
+**Updating later:** `cd` into the repo, run `git pull`, then restart the service so it picks up the change:
+```bash
+git pull
+launchctl kickstart -k gui/$(id -u)/com.justprintit.server
+```
+
+**Removing it:** `bash scripts/uninstall-mac-service.sh` (stops it and removes it from startup - doesn't touch your code or data).
+
 ## Troubleshooting
 
 - **"EADDRINUSE" locally** — something's already using that port. Run with a different one: `$env:PORT=8080; node server.js`.
@@ -138,5 +182,8 @@ Render.com has a free tier for Node apps, but free services **don't support pers
 - **Data disappeared after a redeploy** — the volume isn't attached, or `DATA_DIR` isn't set to match its mount path. Re-check steps 4–5.
 - **Locked out after setting a password** — remove the `APP_PASSWORD` variable in Railway to disable auth again, or double check `APP_USERNAME`/`APP_PASSWORD` match exactly what you're typing.
 - **Windows blocks the installer scripts** — if PowerShell refuses to run the Claude Code install command, run `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` first (approve the prompt), then retry.
+- **Mac service won't start / site unreachable after `install-mac-service.sh`** — check the logs it printed the path to (`logs/server.error.log` in the repo folder) for the actual error. Most common cause is another process already using the port; pick a different one and re-run: `PORT=8080 bash scripts/install-mac-service.sh`.
+- **Mac service didn't pick up a `git pull`** — the background service keeps running the old code until restarted: `launchctl kickstart -k gui/$(id -u)/com.justprintit.server`.
+- **Can't reach the Mac from your phone** — make sure both are on the same Wi-Fi network (not a guest network, which is often isolated), and that macOS's own firewall (System Settings → Network → Firewall) isn't blocking incoming connections to Node - if it's on, allow Node.js when macOS prompts, or add it manually under Firewall Options.
 
 Sources: [Claude Code Quickstart](https://code.claude.com/docs/en/quickstart), [Railway Docs](https://docs.railway.com), [Render free tier limitations](https://render.com/articles/platforms-with-a-real-free-tier-for-developers-in-2026)
