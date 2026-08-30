@@ -26,7 +26,7 @@ Environment variables (all optional, see `.env.example`):
 | `DATA_DIR` | Where `db.json` is stored (default `./data`) - point this at a persistent volume when hosting |
 | `APP_USERNAME` / `APP_PASSWORD` | Set both to require an HTTP Basic Auth login. Unset = no auth (fine for local use only) |
 
-**Want this running somewhere other than your terminal?** See [`SETUP-AND-DEPLOY.md`](./SETUP-AND-DEPLOY.md) for a full beginner-friendly walkthrough (Git/GitHub, Claude Code, and either a real public URL via Railway or running permanently in the background on your own Mac).
+**Want this running somewhere other than your terminal?** See [`SETUP-AND-DEPLOY.md`](./SETUP-AND-DEPLOY.md) for a full beginner-friendly walkthrough (Git/GitHub, Claude Code, and a real public URL via Railway, a background service on your own Mac, or Docker on a home server/NAS like Unraid, TrueNAS, or Proxmox).
 
 ## Demo data
 

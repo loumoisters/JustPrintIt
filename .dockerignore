@@ -1,0 +1,25 @@
+.git
+.gitignore
+node_modules
+
+# Live data - never bake this into the image. The container's DATA_DIR
+# should point at a mounted volume instead (see docker-compose.yml); on
+# first run with no db.json there, the app bootstraps from the checked-in
+# data/db.example.json seed automatically.
+data/db.json
+data/uploads/
+data/backups/
+data/spoolmandb-cache.json
+
+# Mac-only background-service scripts and their log output - irrelevant
+# inside a Linux container.
+scripts/install-mac-service.sh
+scripts/uninstall-mac-service.sh
+logs/
+*.log
+
+# Docs, personal files, misc - not needed at runtime.
+*.md
+JustPrintIt-Tracker.xlsx
+test/
+.DS_Store

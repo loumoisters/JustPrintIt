@@ -92,12 +92,13 @@ It can read your files, make edits, and run commands (like `node -c` to check sy
 
 ## Part 4 — Deploy it
 
-Two good options depending on what you need:
+A few good options depending on what you need:
 
 - **Option A: Railway** — a real public URL, reachable from anywhere on the internet. Costs a few dollars a month.
 - **Option B: Your own Mac** — runs permanently in the background on a Mac you own, reachable from your home network (your computer, phone, etc. on the same Wi-Fi). Free, and nothing leaves your house.
+- **Option C: A home server/NAS (Unraid, TrueNAS, Proxmox, etc.)** — the best fit if you want one always-on copy that every device (PC, Mac, phone) connects to as a client, instead of each device running its own separate copy with its own separate data. Also free.
 
-Pick whichever matches what you actually need. You can also do both.
+Pick whichever matches what you actually need. If you're using multiple devices day-to-day, Option C is worth the extra setup - Option B (running it on more than one machine) means each copy has its own independent orders/customers/etc. that never sync with each other.
 
 ### Option A: Railway (cloud, reachable from anywhere)
 
@@ -175,6 +176,35 @@ launchctl kickstart -k gui/$(id -u)/com.justprintit.server
 
 **Removing it:** `bash scripts/uninstall-mac-service.sh` (stops it and removes it from startup - doesn't touch your code or data).
 
+### Option C: A home server/NAS via Docker (Unraid, TrueNAS, Proxmox, etc.)
+
+This runs the app as a Docker container on an always-on server you already have, using the `Dockerfile` and `docker-compose.yml` already in the repo. Every device on your network - PC, Mac, phone - just opens a browser to the server's address, so there's one shared copy of your data instead of several that drift apart. This is the right choice if you're using more than one computer day-to-day (see the note at the top of this Part).
+
+**1. Get the code onto the server.** Either `git clone` the repo directly on the server if it has shell access (same command as Option B, step 2), or copy the folder over from wherever you've been editing it (network share, `scp`, etc.) - whatever's normal for how you manage that server.
+
+**2. Bring it up with Docker Compose**, from inside the repo folder on the server:
+```bash
+docker compose up -d --build
+```
+That builds the image (first time only) and starts the container in the background, set to restart automatically if the server reboots or the container crashes (`restart: unless-stopped` in `docker-compose.yml`). Your data lives in a `data/` folder next to the compose file, mounted into the container - it persists across rebuilds/restarts.
+
+**3. Find it on your network.** By default it's on port 3000 - `http://<server-ip>:3000` from any device on the same network. If you don't know the server's IP, check your NAS/router's dashboard, or run `hostname -I` (Linux) on the server itself.
+
+**4. (Optional) Turn on the password lock.** Edit `docker-compose.yml`, uncomment the `APP_USERNAME`/`APP_PASSWORD` lines under `environment:`, set a real password, then `docker compose up -d --build` again to apply it.
+
+**Updating later:**
+```bash
+git pull
+docker compose up -d --build
+```
+
+**Removing it:** `docker compose down` (stops and removes the container; your `data/` folder is untouched since it's just a mounted host folder, not stored inside the container).
+
+**Notes for specific platforms** - the `docker compose` commands above are identical everywhere; these are just where to run them:
+- **Unraid:** SSH in and run the commands from the repo folder, or use the *Compose Manager* plugin (Community Applications) to manage it from the web UI instead of the command line. Put the repo (and its `data/` folder) somewhere under `/mnt/user/appdata/` or a share of your choosing.
+- **TrueNAS SCALE:** Enable a shell/SSH for your user (or use the built-in Shell in the web UI) and run the commands from there. TrueNAS's own "Apps" section is built for prebuilt images from a registry rather than building from a local Dockerfile, so `docker compose` from the shell is the more direct path here.
+- **Proxmox:** Doesn't run Docker containers directly - create an LXC container or small VM first (a lightweight Debian/Ubuntu LXC with Docker installed works well), then follow the same steps inside that.
+
 ## Troubleshooting
 
 - **"EADDRINUSE" locally** — something's already using that port. Run with a different one: `$env:PORT=8080; node server.js`.
@@ -185,5 +215,8 @@ launchctl kickstart -k gui/$(id -u)/com.justprintit.server
 - **Mac service won't start / site unreachable after `install-mac-service.sh`** — check the logs it printed the path to (`logs/server.error.log` in the repo folder) for the actual error. Most common cause is another process already using the port; pick a different one and re-run: `PORT=8080 bash scripts/install-mac-service.sh`.
 - **Mac service didn't pick up a `git pull`** — the background service keeps running the old code until restarted: `launchctl kickstart -k gui/$(id -u)/com.justprintit.server`.
 - **Can't reach the Mac from your phone** — make sure both are on the same Wi-Fi network (not a guest network, which is often isolated), and that macOS's own firewall (System Settings → Network → Firewall) isn't blocking incoming connections to Node - if it's on, allow Node.js when macOS prompts, or add it manually under Firewall Options.
+- **`docker compose: command not found`** — older Docker installs use a hyphen: try `docker-compose up -d --build` instead. If neither works, Docker itself isn't installed/enabled on that server yet.
+- **Container starts then immediately exits** — check `docker compose logs` for the actual error. A common cause is the `data/` folder not existing yet or having permissions the container's user can't write to; `mkdir -p data` next to the compose file first and try again.
+- **Data reset after rebuilding the container** — the volume mount is missing or pointing somewhere unexpected; double-check the `volumes:` line in `docker-compose.yml` matches where you actually expect `data/` to live.
 
 Sources: [Claude Code Quickstart](https://code.claude.com/docs/en/quickstart), [Railway Docs](https://docs.railway.com), [Render free tier limitations](https://render.com/articles/platforms-with-a-real-free-tier-for-developers-in-2026)

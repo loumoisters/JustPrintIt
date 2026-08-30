@@ -1,0 +1,33 @@
+# Brings up JustPrintIt as a permanent background service via Docker -
+# works the same on Unraid, TrueNAS SCALE, Proxmox (with Docker or in an
+# LXC/VM), or any other Docker host. See SETUP-AND-DEPLOY.md (Option C) for
+# the full walkthrough, including per-platform notes.
+#
+# Usage:
+#   docker compose up -d --build      # start it (builds the image first time)
+#   docker compose logs -f            # watch logs
+#   docker compose down               # stop it
+#   docker compose up -d --build      # re-run after a `git pull` to update
+
+services:
+  justprintit:
+    build: .
+    container_name: justprintit
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      # Everything the app needs to persist - db.json, uploaded receipt
+      # files, and automatic pre-reset/restore backups - all live under
+      # data/, so one bind mount to a host folder covers all of it. Change
+      # the left-hand side to wherever you want this to live on the host
+      # (e.g. an Unraid share path or a TrueNAS dataset), or leave it as
+      # ./data to keep it right next to the compose file.
+      - ./data:/app/data
+    environment:
+      - PORT=3000
+      # Uncomment and set these to turn on the password lock (HTTP Basic
+      # Auth) - worth doing once other devices on your network can reach
+      # this, since it's unset (no password) by default.
+      # - APP_USERNAME=admin
+      # - APP_PASSWORD=changeme
